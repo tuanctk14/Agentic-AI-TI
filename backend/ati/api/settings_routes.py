@@ -748,7 +748,7 @@ async def discover_external(cid: int, provider: str = ""):
                 "salesforce": "salesforce.com", "twilio": "twilio.com",
                 "cloudflare": "cloudflare.com", "crowdstrike": "crowdstrike.com",
                 "paloalto": "paloaltonetworks.com", "fortinet": "fortinet.com",
-                "solvent": "solventcyber.com", "solvent cybersecurity": "solventcyber.com",
+                "ati": "ati-threat.io", "agentic threat intelligence": "ati-threat.io",
             }
             domain = known_domains.get(name_lower)
             if not domain:

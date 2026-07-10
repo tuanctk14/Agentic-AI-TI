@@ -272,7 +272,7 @@ def _build_pdf(data: dict) -> bytes:
 
     # ── Footer ──
     footer_data = [[
-        Paragraph("SOLVENT CYBERSECURITY LLC &nbsp;·&nbsp; Confidential - For Authorized Recipients Only",
+        Paragraph("ATI THREAT INTELLIGENCE &nbsp;·&nbsp; Confidential - For Authorized Recipients Only",
             ParagraphStyle("f", fontSize=7.5, textColor=white, alignment=TA_CENTER))
     ]]
     footer = Table(footer_data, colWidths=["100%"])

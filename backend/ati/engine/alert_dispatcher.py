@@ -34,7 +34,7 @@ def send_email(subject: str, body: str, to_email: str) -> bool:
     try:
         msg = MIMEMultipart("alternative")
         msg["Subject"] = subject
-        msg["From"] = getattr(settings, "SMTP_USER", "ati@solventcyber.com")
+        msg["From"] = getattr(settings, "SMTP_USER", "ati@ati-threat.io")
         msg["To"] = to_email
         msg.attach(MIMEText(body, "plain"))
         port = int(getattr(settings, "SMTP_PORT", 587))

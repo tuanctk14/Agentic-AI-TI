@@ -31,7 +31,7 @@ class TestDomainNameValidation:
         ("Tesla", "tesla.com"),
         ("International Business Machines", "ibm.com"),
         ("VulnWeb Demo", "vulnweb.com"),
-        ("EVN", "solventcyber.com"),
+        ("EVN", "evn.com.vn"),
     ])
     def test_valid_pairs_pass(self, name, domain):
         assert _domain_matches_name(domain, name), f"{name} should match {domain}"
