@@ -58,8 +58,8 @@ class Settings(BaseSettings):
     SECURITYTRAILS_API_KEY: str = ""  # Enables subdomain enumeration + DNS history + WHOIS
     AGENT_SIGNING_KEY: str = ""       # HMAC-SHA256 key for validating agent bundles
     SHODAN_API_KEY: str = ""
-    CENSYS_API_ID: str = ""
-    CENSYS_API_SECRET: str = ""
+    CENSYS_API_KEY: str = ""  # Censys Platform API v3 Bearer token (https://app.censys.io/account/settings/api)
+    CENSYS_ORG_ID: str = ""   # Optional: organization ID for multi-org setups
     GITHUB_TOKEN: str = ""
     INTELX_API_KEY: str = ""
     DARKSEARCH_API_KEY: str = ""

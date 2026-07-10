@@ -50,8 +50,8 @@ OTX_KEY       = os.getenv("OTX_API_KEY", "")
 SHODAN_KEY    = os.getenv("SHODAN_API_KEY", "")
 URLSCAN_KEY   = os.getenv("URLSCAN_API_KEY", "")
 ABUSEIPDB_KEY = os.getenv("ABUSEIPDB_API_KEY", "")
-CENSYS_ID     = os.getenv("CENSYS_API_ID", "")
-CENSYS_SECRET = os.getenv("CENSYS_API_SECRET", "")
+CENSYS_API_KEY = os.getenv("CENSYS_API_KEY", "")  # Censys Platform API v3 - Bearer token
+CENSYS_ORG_ID  = os.getenv("CENSYS_ORG_ID", "")  # Optional organization ID for multi-org setup
 INTELX_KEY    = os.getenv("INTELX_API_KEY", "")
 PULSEDIVE_KEY = os.getenv("PULSEDIVE_API_KEY", "")
 HTTP_TIMEOUT  = 30.0
@@ -604,55 +604,122 @@ async def collect_shodan_customer():
 
 
 async def collect_censys():
-    """Censys - exposed services via Censys Search 2.0. Requires CENSYS_API_ID + CENSYS_API_SECRET."""
-    if not CENSYS_ID or not CENSYS_SECRET:
-        log.info("Censys: skipped (no CENSYS_API_ID/SECRET)")
-        return {"skipped": True, "reason": "no CENSYS_API_ID", "new": 0}
+    """Censys Platform API v3 - Host intelligence for customer IPs/domains.
+
+    Requires CENSYS_API_KEY (Bearer token from https://app.censys.io/account/settings/api)
+    Optional: CENSYS_ORG_ID for multi-org setups
+
+    Uses /v3/global/asset/host/ endpoint to get:
+    - Open ports and services
+    - TLS certificates
+    - Operating system details
+    - Autonomous system information
+    """
+    if not CENSYS_API_KEY:
+        log.info("Censys: skipped (no CENSYS_API_KEY)")
+        return {"skipped": True, "reason": "no CENSYS_API_KEY", "new": 0}
+
     started = datetime.utcnow()
-    stats = {"new": 0, "total": 0}
+    stats = {"new": 0, "total": 0, "errors": 0}
+
     try:
-        import base64
-        auth_token = base64.b64encode(f"{CENSYS_ID}:{CENSYS_SECRET}".encode()).decode()
         async with httpx.AsyncClient(timeout=HTTP_TIMEOUT) as c:
             async with AsyncSessionLocal() as db:
-                # Get customer domains/IPs to search
+                # Get customer IPs and domains to lookup
                 try:
                     r = await db.execute(text(
                         "SELECT DISTINCT asset_value, asset_type FROM customer_assets "
-                        "WHERE asset_type IN ('domain','ip') AND customer_id IS NOT NULL LIMIT 15"
+                        "WHERE asset_type IN ('ip', 'domain') AND customer_id IS NOT NULL LIMIT 20"
                     ))
                     assets = r.all()
-                except Exception:
+                except Exception as e:
+                    log.error(f"Censys: Failed to fetch assets: {e}")
                     assets = []
+
+                # API headers (Bearer token authentication)
+                headers = {
+                    "Authorization": f"Bearer {CENSYS_API_KEY}",
+                    "Accept": "application/vnd.censys.api.v3+json"
+                }
+                if CENSYS_ORG_ID:
+                    headers["X-Organization-ID"] = CENSYS_ORG_ID
+
                 for asset_value, asset_type in assets:
-                    query = asset_value if asset_type == "ip" else f"services.tls.certificates.leaf.names: {asset_value}"
                     try:
-                        resp = await c.get("https://search.censys.io/api/v2/hosts/search",
-                            params={"q": query, "per_page": 25},
-                            headers={"Authorization": f"Basic {auth_token}", "Accept": "application/json"})
-                        if resp.status_code == 200:
-                            hits = resp.json().get("result", {}).get("hits", [])
-                            stats["total"] += len(hits)
-                            for hit in hits[:25]:
-                                ip = hit.get("ip", "")
-                                if not ip: continue
-                                services = hit.get("services", [])
-                                ports = [str(s.get("port", "")) for s in services[:10]]
-                                raw = f"Censys: {ip} ports:{','.join(ports)} for {asset_value}"
-                                det_id = await insert_detection(db, "censys", "ipv4", ip,
-                                    "MEDIUM", 72, raw, confidence=0.7,
-                                    metadata={"ports": ports, "query": asset_value,
-                                              "autonomous_system": hit.get("autonomous_system", {}).get("name", "")})
-                                if det_id: stats["new"] += 1
-                        await asyncio.sleep(0.5)
+                        # For IPs: direct host lookup
+                        if asset_type == "ip":
+                            endpoint = f"https://api.platform.censys.io/v3/global/asset/host/{asset_value}"
+                            resp = await c.get(endpoint, headers=headers)
+
+                            if resp.status_code == 200:
+                                host_data = resp.json()
+                                stats["total"] += 1
+
+                                # Extract services (open ports)
+                                services = host_data.get("services", [])
+                                ports = [str(s.get("port")) for s in services if s.get("port")]
+
+                                # Extract certificate info
+                                cert_names = []
+                                if "tls" in host_data:
+                                    for cert in host_data.get("tls", {}).get("certificates", []):
+                                        cert_names.extend(cert.get("names", []))
+
+                                # Build enriched detection
+                                port_summary = ",".join(ports[:10]) if ports else "none"
+                                raw = f"Censys Host Scan: {asset_value} ports:[{port_summary}]"
+                                if cert_names:
+                                    raw += f" certs:[{','.join(cert_names[:3])}]"
+
+                                det_id = await insert_detection(
+                                    db, "censys", "ipv4", asset_value,
+                                    "MEDIUM", 72, raw, confidence=0.8,
+                                    metadata={
+                                        "ports": ports,
+                                        "service_count": len(services),
+                                        "cert_names": cert_names,
+                                        "asn": host_data.get("autonomous_system", {}).get("asn"),
+                                        "org": host_data.get("autonomous_system", {}).get("name"),
+                                        "os": host_data.get("operating_system", {}).get("description"),
+                                        "scan_timestamp": host_data.get("last_updated_at")
+                                    }
+                                )
+                                if det_id:
+                                    stats["new"] += 1
+
+                            elif resp.status_code == 401:
+                                log.error("Censys: Authentication failed - check CENSYS_API_KEY")
+                                stats["errors"] += 1
+                                break
+                            elif resp.status_code == 429:
+                                log.warning("Censys: Rate limit exceeded, pausing...")
+                                await asyncio.sleep(2)
+                            elif resp.status_code == 404:
+                                log.debug(f"Censys: Host {asset_value} not found in database")
+
+                        # For domains: threat-hunting search API alternative (requires paid tier)
+                        elif asset_type == "domain" and False:  # Disabled until threat-hunting API confirmed
+                            # Would use /v3/threat-hunting/hosts endpoint
+                            pass
+
+                        await asyncio.sleep(0.5)  # Rate limiting
+
+                    except httpx.TimeoutException:
+                        log.warning(f"Censys: Timeout for {asset_value}")
+                        stats["errors"] += 1
                     except Exception as e:
                         log.debug(f"Censys {asset_value}: {e}")
+                        stats["errors"] += 1
+
                 await insert_collector_run(db, "censys", "completed", stats, started, datetime.utcnow())
                 await db.commit()
-        log.info(f"Censys: {stats['new']} new / {stats['total']} total")
+
+        log.info(f"Censys: {stats['new']} new / {stats['total']} total (errors: {stats['errors']})")
+
     except Exception as e:
-        log.error(f"Censys failed: {e}")
+        log.error(f"Censys collector failed: {e}")
         stats["error"] = str(e)
+
     return stats
 
 
