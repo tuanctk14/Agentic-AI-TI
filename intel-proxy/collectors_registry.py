@@ -20,7 +20,7 @@ log = logging.getLogger("intel-proxy.collectors")
 __all__ = [
     "collect_mitre", "collect_ransomfeed", "collect_rss", "collect_paste",
     "collect_hudsonrock", "collect_otx", "collect_urlscan", "collect_phishtank_urlhaus",
-    "collect_shodan_customer", "collect_censys", "collect_intelx", "collect_darksearch",
+    "collect_shodan_customer", "collect_censys", "collect_intelx", "collect_leakcheck", "collect_darksearch",
     "collect_circl_misp", "collect_pulsedive", "collect_vxunderground", "collect_ransomwatch",
     "collect_grep_app", "collect_github_secrets", "collect_breach", "collect_socradar",
     "collect_spycloud", "collect_crowdstrike", "collect_github_gists", "collect_sourcegraph",
@@ -52,9 +52,10 @@ URLSCAN_KEY   = os.getenv("URLSCAN_API_KEY", "")
 ABUSEIPDB_KEY = os.getenv("ABUSEIPDB_API_KEY", "")
 CENSYS_API_KEY = os.getenv("CENSYS_API_KEY", "")  # Censys Platform API v3 - Bearer token
 CENSYS_ORG_ID  = os.getenv("CENSYS_ORG_ID", "")  # Optional organization ID for multi-org setup
-INTELX_KEY    = os.getenv("INTELX_API_KEY", "")
-PULSEDIVE_KEY = os.getenv("PULSEDIVE_API_KEY", "")
-HTTP_TIMEOUT  = 30.0
+INTELX_KEY     = os.getenv("INTELX_API_KEY", "")
+PULSEDIVE_KEY  = os.getenv("PULSEDIVE_API_KEY", "")
+LEAKCHECK_KEY  = os.getenv("LEAKCHECK_API_KEY", "")  # LeakCheck Pro API v2 - X-API-Key header
+HTTP_TIMEOUT   = 30.0
 
 # These will be injected by proxy_server.py at import time
 insert_detection = None
@@ -781,6 +782,105 @@ async def collect_intelx():
         stats["error"] = str(e)
     return stats
 
+
+async def collect_leakcheck():
+    """LeakCheck Pro API v2 - Credential breach monitoring.
+
+    Checks if customer email addresses/domains appear in breaches.
+    Uses Pro API v2 endpoint with X-API-Key header authentication.
+    Rate limit: 3 requests/second (default).
+    """
+    if not LEAKCHECK_KEY:
+        log.info("LeakCheck: skipped (no LEAKCHECK_API_KEY)")
+        return {"skipped": True, "reason": "no LEAKCHECK_API_KEY", "new": 0}
+
+    started = datetime.utcnow()
+    stats = {"new": 0, "total": 0, "errors": 0}
+
+    try:
+        async with httpx.AsyncClient(timeout=HTTP_TIMEOUT) as c:
+            async with AsyncSessionLocal() as db:
+                # Get customer email addresses and domains to check
+                try:
+                    r = await db.execute(text(
+                        "SELECT DISTINCT asset_value, asset_type FROM customer_assets "
+                        "WHERE asset_type IN ('email_address', 'domain') LIMIT 15"
+                    ))
+                    assets = r.all()
+                except Exception as e:
+                    log.error(f"LeakCheck: Failed to fetch assets: {e}")
+                    assets = []
+
+                for asset_value, asset_type in assets:
+                    try:
+                        # Pro API v2 endpoint: /api/v2/query/{identifier}
+                        # Returns breach data for the identifier
+                        resp = await c.get(
+                            f"https://leakcheck.io/api/v2/query/{asset_value}",
+                            headers={
+                                "X-API-Key": LEAKCHECK_KEY,
+                                "Accept": "application/json"
+                            },
+                            timeout=10
+                        )
+
+                        if resp.status_code == 200:
+                            data = resp.json()
+                            breaches = data.get("result", [])
+                            stats["total"] += len(breaches)
+
+                            for breach in breaches:
+                                source = breach.get("source", "unknown")
+                                leaked_type = breach.get("type", "unknown")  # e.g., "password", "email", "hash"
+                                date = breach.get("date", "unknown")
+
+                                raw = f"LeakCheck {source}: {asset_value} ({leaked_type}) leaked on {date}"
+                                severity = "CRITICAL" if leaked_type == "password" else "HIGH"
+                                confidence = 0.95
+
+                                det_id = await insert_detection(
+                                    db, "leakcheck", f"breach_{asset_type}", asset_value,
+                                    severity, 96, raw, confidence=confidence,
+                                    metadata={
+                                        "breach_source": source,
+                                        "breach_type": leaked_type,
+                                        "breach_date": date,
+                                        "identifier_type": asset_type,
+                                        "api_v2": "pro"
+                                    }
+                                )
+                                if det_id:
+                                    stats["new"] += 1
+
+                        elif resp.status_code == 401:
+                            log.error("LeakCheck: Authentication failed - check LEAKCHECK_API_KEY")
+                            stats["errors"] += 1
+                            break
+                        elif resp.status_code == 429:
+                            log.warning("LeakCheck: Rate limited, pausing...")
+                            await asyncio.sleep(1)
+                        elif resp.status_code == 404:
+                            log.debug(f"LeakCheck: {asset_value} not found in any breaches")
+
+                        await asyncio.sleep(0.4)  # Rate limit: 3 req/sec = 0.33s min, use 0.4s for safety
+
+                    except httpx.TimeoutException:
+                        log.warning(f"LeakCheck: Timeout for {asset_value}")
+                        stats["errors"] += 1
+                    except Exception as e:
+                        log.debug(f"LeakCheck {asset_value}: {e}")
+                        stats["errors"] += 1
+
+                await insert_collector_run(db, "leakcheck", "completed", stats, started, datetime.utcnow())
+                await db.commit()
+
+        log.info(f"LeakCheck: {stats['new']} new / {stats['total']} total (errors: {stats['errors']})")
+
+    except Exception as e:
+        log.error(f"LeakCheck collector failed: {e}")
+        stats["error"] = str(e)
+
+    return stats
 
 
 async def collect_darksearch():

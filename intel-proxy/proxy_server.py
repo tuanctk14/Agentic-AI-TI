@@ -208,6 +208,7 @@ ALL_COLLECTORS = {
     "shodan": collect_shodan_customer,
     "censys": collect_censys,
     "intelx": collect_intelx,
+    "leakcheck": collect_leakcheck,
     "breach": collect_breach,
     "socradar": collect_socradar,
     # ── ENTERPRISE - require paid keys ──
