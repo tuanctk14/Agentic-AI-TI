@@ -6,7 +6,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from ati.config import settings
 
-logger = logging.getLogger("arguswatch.engine.stix")
+logger = logging.getLogger("ati.engine.stix")
 
 STIX_OUTPUT_DIR = Path(getattr(settings, "STIX_OUTPUT_DIR", "/tmp/stix_out"))
 
@@ -55,10 +55,10 @@ def export_detection_to_stix(detection) -> dict:
                 "confidence": int((detection.confidence or 0.5) * 100),
                 "labels": [detection.source, detection.ioc_type],
                 "custom_properties": {
-                    "x_arguswatch_severity": _sev(detection.severity) or "MEDIUM",
-                    "x_arguswatch_source": detection.source,
-                    "x_arguswatch_sla_hours": detection.sla_hours,
-                    "x_arguswatch_customer_id": detection.customer_id,
+                    "x_ati_severity": _sev(detection.severity) or "MEDIUM",
+                    "x_ati_source": detection.source,
+                    "x_ati_sla_hours": detection.sla_hours,
+                    "x_ati_customer_id": detection.customer_id,
                 }
             }
         ]
@@ -103,7 +103,7 @@ def _sev(val):
     return val.value if hasattr(val, "value") else str(val)
 
 
-@_celery_app.task(name="arguswatch.engine.stix_exporter.run_stix_export_task")
+@_celery_app.task(name="ati.engine.stix_exporter.run_stix_export_task")
 def run_stix_export_task():
     import asyncio
     return asyncio.run(export_all_to_stix())

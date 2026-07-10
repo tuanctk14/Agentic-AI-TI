@@ -9,7 +9,7 @@ from ati.collectors._pipeline_hook import trigger_pipeline_for_new, record_colle
 from ati.engine.severity_scorer import score as score_ioc
 from sqlalchemy import select
 
-logger = logging.getLogger("arguswatch.collectors.grep")
+logger = logging.getLogger("ati.collectors.grep")
 
 GREP_BASE = "https://grep.app/api/search"
 
@@ -90,7 +90,7 @@ async def run_collection() -> dict:
     logger.info(f"Grep.app ingest: {stats}")
     return stats
 
-@celery_app.task(name="arguswatch.collectors.grep_collector.collect_grep")
+@celery_app.task(name="ati.collectors.grep_collector.collect_grep")
 def collect_grep():
     async def _wrapped():
         async with record_collector_run("grep") as ctx:

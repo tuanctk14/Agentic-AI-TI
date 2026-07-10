@@ -30,7 +30,7 @@ info() { echo -e "  ${CYAN}ℹ️  INFO${NC}: $1"; }
 echo -e "${BOLD}TEST 0: Docker containers${NC}"
 echo "────────────────────────────────────────"
 
-for svc in arguswatch-backend arguswatch-intel-proxy arguswatch-postgres; do
+for svc in ati-backend ati-intel-proxy ati-postgres; do
     if docker ps --format '{{.Names}}' | grep -q "$svc"; then
         pass "$svc is running"
     else
@@ -203,7 +203,7 @@ echo ""
 echo -e "${BOLD}TEST 4: Pattern Matcher (100 IOC types)${NC}"
 echo "────────────────────────────────────────"
 
-PM_RESULT=$(docker exec arguswatch-backend python3 -c "
+PM_RESULT=$(docker exec ati-backend python3 -c "
 from ati.engine.pattern_matcher import scan_text
 
 test = '''
@@ -321,7 +321,7 @@ done
 echo -e "${BOLD}TEST 7: IOC Types Actually Found in Database${NC}"
 echo "────────────────────────────────────────"
 
-DB_RESULT=$(docker exec arguswatch-backend python3 -c "
+DB_RESULT=$(docker exec ati-backend python3 -c "
 import asyncio
 from ati.database import async_session
 from sqlalchemy import text
@@ -357,8 +357,8 @@ echo ""
 echo -e "${BOLD}TEST 8: AI Provider (Ollama + Qwen)${NC}"
 echo "────────────────────────────────────────"
 
-if docker ps --format '{{.Names}}' | grep -q "arguswatch-ollama"; then
-    MODEL_READY=$(docker exec arguswatch-ollama test -f /tmp/.model_ready && echo "YES" || echo "NO")
+if docker ps --format '{{.Names}}' | grep -q "ati-ollama"; then
+    MODEL_READY=$(docker exec ati-ollama test -f /tmp/.model_ready && echo "YES" || echo "NO")
     if [ "$MODEL_READY" = "YES" ]; then
         pass "Ollama running and Qwen model ready"
         # Quick test
@@ -373,7 +373,7 @@ if docker ps --format '{{.Names}}' | grep -q "arguswatch-ollama"; then
             info "Qwen response: $(echo "$AI_RESP" | python3 -c "import json,sys; print(json.load(sys.stdin).get('answer','?')[:80])" 2>/dev/null)"
         fi
     else
-        warn "Ollama running but model still downloading -  check: docker logs arguswatch-ollama"
+        warn "Ollama running but model still downloading -  check: docker logs ati-ollama"
     fi
 else
     warn "Ollama container not running -  AI bar will use keyword fallback"
@@ -398,6 +398,6 @@ else
     echo "  Fix the failures above, then re-run this script."
 fi
 echo ""
-echo "  Logs: docker logs arguswatch-intel-proxy 2>&1 | tail -50"
+echo "  Logs: docker logs ati-intel-proxy 2>&1 | tail -50"
 echo "  Dashboard: http://localhost:8000"
 echo ""

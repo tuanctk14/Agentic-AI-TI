@@ -21,7 +21,7 @@ from ati.models import (
     AssetType, CveProductMap,
 )
 
-logger = logging.getLogger("arguswatch.api.operations")
+logger = logging.getLogger("ati.api.operations")
 
 
 # Pydantic models for request validation
@@ -394,8 +394,8 @@ async def debug_env_check():
 async def trigger_enterprise(source_id: str):
     import importlib
     ent_map = {
-        "spycloud": "arguswatch.collectors.enterprise.spycloud",
-        "cybersixgill": "arguswatch.collectors.enterprise.cybersixgill",
+        "spycloud": "ati.collectors.enterprise.spycloud",
+        "cybersixgill": "ati.collectors.enterprise.cybersixgill",
     }
     if source_id not in ent_map:
         return {"status": "stub", "message": f"{source_id}: architecture wired, enterprise license required"}

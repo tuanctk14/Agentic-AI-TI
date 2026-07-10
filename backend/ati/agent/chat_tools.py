@@ -10,7 +10,7 @@ import json
 import logging
 from datetime import datetime
 
-logger = logging.getLogger("arguswatch.agent.chat_tools")
+logger = logging.getLogger("ati.agent.chat_tools")
 
 # These get populated at runtime with a db session
 _db = None

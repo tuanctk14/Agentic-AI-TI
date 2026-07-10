@@ -31,7 +31,7 @@ from datetime import datetime
 from sqlalchemy import select, func
 from sqlalchemy.ext.asyncio import AsyncSession
 
-logger = logging.getLogger("arguswatch.agent.reliable_chat")
+logger = logging.getLogger("ati.agent.reliable_chat")
 
 
 # ══════════════════════════════════════════════════════════════════════
@@ -481,7 +481,7 @@ async def reliable_chat(question: str, db: AsyncSession, provider: str = "ollama
         "data": query_results,
         "provider": provider,
         "model": getattr(
-            __import__("arguswatch.config", fromlist=["settings"]).settings,
+            __import__("ati.config", fromlist=["settings"]).settings,
             "OLLAMA_MODEL", ""
         ) if provider == "ollama" else provider,
         "method": "reliable_two_phase",

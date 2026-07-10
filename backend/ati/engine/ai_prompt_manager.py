@@ -29,7 +29,7 @@ from datetime import datetime, timezone
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import text
 
-logger = logging.getLogger("arguswatch.ai_prompt_manager")
+logger = logging.getLogger("ati.ai_prompt_manager")
 
 # ══════════════════════════════════════════════════════════════════════
 # DEFAULT PROMPTS -  used as fallback when DB has no entry

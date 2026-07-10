@@ -10,7 +10,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 # Force test database and auth disabled
 os.environ["AUTH_DISABLED"] = "true"
 os.environ["POSTGRES_HOST"] = "localhost"
-os.environ["POSTGRES_DB"] = "arguswatch_test"
+os.environ["POSTGRES_DB"] = "ati_test"
 
 @pytest.fixture(scope="session")
 def event_loop():

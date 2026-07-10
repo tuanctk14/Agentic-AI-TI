@@ -11,11 +11,11 @@ MIGRATIONS = ["02_migrate_v10.sql", "03_migrate_v11.sql"]
 
 
 def get_dsn() -> str:
-    user = os.environ.get("POSTGRES_USER", "arguswatch")
-    pw   = os.environ.get("POSTGRES_PASSWORD", "arguswatch_dev_2026")
+    user = os.environ.get("POSTGRES_USER", "ati")
+    pw   = os.environ.get("POSTGRES_PASSWORD", "ati_dev_2026")
     host = os.environ.get("POSTGRES_HOST", "postgres")
     port = os.environ.get("POSTGRES_PORT", "5432")
-    db   = os.environ.get("POSTGRES_DB", "arguswatch")
+    db   = os.environ.get("POSTGRES_DB", "ati")
     return f"postgresql://{user}:{pw}@{host}:{port}/{db}"
 
 

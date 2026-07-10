@@ -18,26 +18,26 @@
 -- Step 1: Create restricted role for API requests
 DO $$
 BEGIN
-    IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'arguswatch_api') THEN
-        CREATE ROLE arguswatch_api LOGIN PASSWORD 'arguswatch_api_2026';
+    IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'ati_api') THEN
+        CREATE ROLE ati_api LOGIN PASSWORD 'ati_api_2026';
     END IF;
-    IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'arguswatch_admin') THEN
-        CREATE ROLE arguswatch_admin LOGIN BYPASSRLS PASSWORD 'arguswatch_admin_2026';
+    IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'ati_admin') THEN
+        CREATE ROLE ati_admin LOGIN BYPASSRLS PASSWORD 'ati_admin_2026';
     END IF;
 END
 $$;
 
 -- Grant basic access to api role
-GRANT USAGE ON SCHEMA public TO arguswatch_api;
-GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO arguswatch_api;
-GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO arguswatch_api;
-ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO arguswatch_api;
-ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT USAGE, SELECT ON SEQUENCES TO arguswatch_api;
+GRANT USAGE ON SCHEMA public TO ati_api;
+GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO ati_api;
+GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO ati_api;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO ati_api;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT USAGE, SELECT ON SEQUENCES TO ati_api;
 
 -- Grant full access to admin role
-GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO arguswatch_admin;
-GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO arguswatch_admin;
-ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO arguswatch_admin;
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO ati_admin;
+GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO ati_admin;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO ati_admin;
 
 -- Step 2: Enable RLS on customer-scoped tables
 -- These tables have customer_id and should be filtered per-tenant
@@ -66,7 +66,7 @@ $$ LANGUAGE plpgsql STABLE;
 DROP POLICY IF EXISTS findings_customer_isolation ON findings;
 CREATE POLICY findings_customer_isolation ON findings
     FOR ALL
-    TO arguswatch_api
+    TO ati_api
     USING (
         current_customer_id() IS NULL  -- no filter set = see all (for dashboard overview)
         OR customer_id = current_customer_id()
@@ -80,7 +80,7 @@ CREATE POLICY findings_customer_isolation ON findings
 DROP POLICY IF EXISTS assets_customer_isolation ON customer_assets;
 CREATE POLICY assets_customer_isolation ON customer_assets
     FOR ALL
-    TO arguswatch_api
+    TO ati_api
     USING (
         current_customer_id() IS NULL
         OR customer_id = current_customer_id()
@@ -94,7 +94,7 @@ CREATE POLICY assets_customer_isolation ON customer_assets
 DROP POLICY IF EXISTS exposure_customer_isolation ON customer_exposure;
 CREATE POLICY exposure_customer_isolation ON customer_exposure
     FOR ALL
-    TO arguswatch_api
+    TO ati_api
     USING (
         current_customer_id() IS NULL
         OR customer_id = current_customer_id()
@@ -108,7 +108,7 @@ CREATE POLICY exposure_customer_isolation ON customer_exposure
 DROP POLICY IF EXISTS darkweb_customer_isolation ON darkweb_mentions;
 CREATE POLICY darkweb_customer_isolation ON darkweb_mentions
     FOR ALL
-    TO arguswatch_api
+    TO ati_api
     USING (
         current_customer_id() IS NULL
         OR customer_id IS NULL  -- global intel visible to all
@@ -119,7 +119,7 @@ CREATE POLICY darkweb_customer_isolation ON darkweb_mentions
 DROP POLICY IF EXISTS edr_customer_isolation ON edr_telemetry;
 CREATE POLICY edr_customer_isolation ON edr_telemetry
     FOR ALL
-    TO arguswatch_api
+    TO ati_api
     USING (
         current_customer_id() IS NULL
         OR customer_id = current_customer_id()
@@ -132,7 +132,7 @@ CREATE POLICY edr_customer_isolation ON edr_telemetry
 DROP POLICY IF EXISTS remed_customer_isolation ON remediation_actions;
 CREATE POLICY remed_customer_isolation ON remediation_actions
     FOR ALL
-    TO arguswatch_api
+    TO ati_api
     USING (
         current_customer_id() IS NULL
         OR detection_id IN (SELECT id FROM detections WHERE customer_id = current_customer_id())
@@ -150,7 +150,7 @@ CREATE POLICY remed_customer_isolation ON remediation_actions
 -- product_aliases - global lookup
 
 -- Note: If building a customer-facing portal, add RLS to customers table:
--- CREATE POLICY customer_self_only ON customers FOR SELECT TO arguswatch_customer
+-- CREATE POLICY customer_self_only ON customers FOR SELECT TO ati_customer
 --     USING (id = current_customer_id());
 
 -- Step 5: Verify

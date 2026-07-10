@@ -9,7 +9,7 @@ from ati.models import Detection, SeverityLevel, DetectionStatus, CveProductMap
 from ati.celery_app import celery_app
 from ati.collectors._pipeline_hook import trigger_pipeline_for_new
 
-logger = logging.getLogger("arguswatch.collectors.cisa_kev")
+logger = logging.getLogger("ati.collectors.cisa_kev")
 
 
 # ── Sync engine for Celery (created once via lru_cache, never leaked) ──
@@ -81,7 +81,7 @@ async def run_collection() -> dict:
 
 # ── Sync path (Celery beat - no event loop conflict, no engine leak) ──
 
-@celery_app.task(name="arguswatch.collectors.cisa_kev.collect_kev", bind=False)
+@celery_app.task(name="ati.collectors.cisa_kev.collect_kev", bind=False)
 def collect_kev():
     """Sync wrapper for Celery. Engine created once via lru_cache, reused across all task calls."""
     import asyncio

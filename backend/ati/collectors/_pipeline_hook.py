@@ -21,7 +21,7 @@ import logging
 from contextlib import asynccontextmanager
 from datetime import datetime, timezone
 
-logger = logging.getLogger("arguswatch.collectors.hook")
+logger = logging.getLogger("ati.collectors.hook")
 
 
 def trigger_pipeline(detection_id: int):

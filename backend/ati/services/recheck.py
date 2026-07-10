@@ -9,7 +9,7 @@ from sqlalchemy import select, and_, update
 from ati.database import async_session
 from ati.models import Detection, RemediationAction, DetectionStatus
 
-logger = logging.getLogger("arguswatch.recheck")
+logger = logging.getLogger("ati.recheck")
 
 async def schedule_recheck(detection_id: int, remediation_id: int) -> dict:
     """Called when a remediation action is marked complete."""

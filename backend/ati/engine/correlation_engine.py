@@ -15,7 +15,7 @@ from ati.models import Detection, CustomerAsset, DetectionStatus, Finding
 from ati.engine.customer_router import CustomerAssetRecord, route_to_customers
 from ati.models import CveProductMap
 
-logger = logging.getLogger("arguswatch.engine.correlation")
+logger = logging.getLogger("ati.engine.correlation")
 
 
 
@@ -458,7 +458,7 @@ def _sev(val):
 
 
 
-@_celery_app.task(name="arguswatch.engine.correlation_engine.run_correlation_task")
+@_celery_app.task(name="ati.engine.correlation_engine.run_correlation_task")
 def run_correlation_task():
     import asyncio
     from ati.database import async_session

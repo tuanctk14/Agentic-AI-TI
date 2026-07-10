@@ -17,7 +17,7 @@ from ati.config import settings
 from ati.celery_app import celery_app
 from ati.collectors._pipeline_hook import trigger_pipeline_for_new, record_collector_run
 
-logger = logging.getLogger("arguswatch.collectors.otx")
+logger = logging.getLogger("ati.collectors.otx")
 
 OTX_BASE = "https://otx.alienvault.com"
 
@@ -162,7 +162,7 @@ async def run_collection() -> dict:
     return stats
 
 
-@celery_app.task(name="arguswatch.collectors.otx_collector.collect_otx")
+@celery_app.task(name="ati.collectors.otx_collector.collect_otx")
 def collect_otx():
     import asyncio
     async def _wrapped():

@@ -5,7 +5,7 @@ import socket, logging
 from datetime import datetime, timezone
 from ati.config import settings
 
-logger = logging.getLogger("arguswatch.engine.syslog")
+logger = logging.getLogger("ati.engine.syslog")
 
 SYSLOG_HOST = getattr(settings, "SYSLOG_HOST", "") or ""
 SYSLOG_PORT = int(getattr(settings, "SYSLOG_PORT", 514) or 514)
@@ -84,7 +84,7 @@ def _sev(val):
     return val.value if hasattr(val, "value") else str(val)
 
 
-@_celery_app.task(name="arguswatch.engine.syslog_exporter.run_syslog_task")
+@_celery_app.task(name="ati.engine.syslog_exporter.run_syslog_task")
 def run_syslog_task():
     import asyncio
     return asyncio.run(send_recent_to_siem())

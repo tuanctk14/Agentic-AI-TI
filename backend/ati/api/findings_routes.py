@@ -21,7 +21,7 @@ from ati.models import (
     AssetType, CveProductMap,
 )
 
-logger = logging.getLogger("arguswatch.api.findings")
+logger = logging.getLogger("ati.api.findings")
 
 def _sev(val):
     """Safe severity value extraction - handles both enum and string."""

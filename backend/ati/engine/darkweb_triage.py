@@ -21,7 +21,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from ati.services.ai_pipeline_hooks import _llm_json, _pipeline_ai_available
 
-logger = logging.getLogger("arguswatch.agent.darkweb_triage")
+logger = logging.getLogger("ati.agent.darkweb_triage")
 
 CLASSIFICATION_TYPES = {
     "pre_encryption_extortion",     # Ransomware group posted BEFORE encryption - urgent

@@ -8,7 +8,7 @@ from ati.celery_app import celery_app
 from ati.collectors._pipeline_hook import trigger_pipeline_for_new, record_collector_run
 from sqlalchemy import select
 
-logger = logging.getLogger("arguswatch.collectors.hudsonrock")
+logger = logging.getLogger("ati.collectors.hudsonrock")
 
 CAVALIER_BASE = "https://cavalier.hudsonrock.com/api/json/v2"
 
@@ -70,7 +70,7 @@ async def run_collection() -> dict:
     logger.info(f"Hudson Rock ingest: {stats}")
     return stats
 
-@celery_app.task(name="arguswatch.collectors.hudsonrock_collector.collect_hudsonrock")
+@celery_app.task(name="ati.collectors.hudsonrock_collector.collect_hudsonrock")
 def collect_hudsonrock():
     async def _wrapped():
         async with record_collector_run("hudsonrock") as ctx:

@@ -22,7 +22,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from ati.models import CustomerExposure, Customer, ThreatActor
 
-logger = logging.getLogger("arguswatch.agent.exposure_narrative")
+logger = logging.getLogger("ati.agent.exposure_narrative")
 
 
 async def generate_exposure_narrative(customer_id: int, db: AsyncSession) -> str | None:

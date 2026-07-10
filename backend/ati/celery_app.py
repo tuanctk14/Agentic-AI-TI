@@ -21,10 +21,10 @@ from celery import Celery
 from celery.schedules import crontab
 from ati.config import settings
 
-logger = logging.getLogger("arguswatch.celery")
+logger = logging.getLogger("ati.celery")
 
 celery_app = Celery(
-    "arguswatch",
+    "ati",
     broker=settings.CELERY_BROKER_URL,
     backend=settings.CELERY_RESULT_BACKEND,
 )
@@ -45,7 +45,7 @@ celery_app.conf.update(
         # COLLECTION via Intel Proxy (the only path with internet)
         # ═══════════════════════════════════════════════════════════
         "intel-proxy-collect-all-4h": {
-            "task": "arguswatch.tasks.collect_via_intel_proxy",
+            "task": "ati.tasks.collect_via_intel_proxy",
             "schedule": 3600.0,  # V16.4.5: every 1 hour (was 4h - too slow for demos)
             "kwargs": {"endpoint": "all"},
         },
@@ -55,7 +55,7 @@ celery_app.conf.update(
         # Runs 5min after collection to match new IOCs to customer assets
         # ═══════════════════════════════════════════════════════════
         "match-all-customers-30m": {
-            "task": "arguswatch.tasks.match_all_customers_task",
+            "task": "ati.tasks.match_all_customers_task",
             "schedule": 1800.0,  # 30 min
         },
 
@@ -63,7 +63,7 @@ celery_app.conf.update(
         # CORRELATION - routes unmatched detections to customers
         # ═══════════════════════════════════════════════════════════
         "correlate-detections-15m": {
-            "task": "arguswatch.tasks.correlate_detections_task",
+            "task": "ati.tasks.correlate_detections_task",
             "schedule": 900.0,  # 15 min
         },
 
@@ -71,7 +71,7 @@ celery_app.conf.update(
         # ATTRIBUTION - link findings to threat actors
         # ═══════════════════════════════════════════════════════════
         "attribution-pass-30m": {
-            "task": "arguswatch.engine.attribution_engine.run_attribution_task",
+            "task": "ati.engine.attribution_engine.run_attribution_task",
             "schedule": 1800.0,
         },
 
@@ -80,7 +80,7 @@ celery_app.conf.update(
         # Class 2/3 IOCs that can't match customers directly
         # ═══════════════════════════════════════════════════════════
         "threat-pressure-1h": {
-            "task": "arguswatch.tasks.threat_pressure_task",
+            "task": "ati.tasks.threat_pressure_task",
             "schedule": 3600.0,
         },
 
@@ -88,7 +88,7 @@ celery_app.conf.update(
         # EXPOSURE SCORING - recalculate with 3-layer model
         # ═══════════════════════════════════════════════════════════
         "exposure-recalc-1h": {
-            "task": "arguswatch.tasks.exposure_recalc_task",
+            "task": "ati.tasks.exposure_recalc_task",
             "schedule": 3600.0,
         },
 
@@ -96,7 +96,7 @@ celery_app.conf.update(
         # ALERT CHECK - scan for SLA breaches and unalerted findings
         # ═══════════════════════════════════════════════════════════
         "alert-sla-check-15m": {
-            "task": "arguswatch.tasks.check_sla_and_alert_task",
+            "task": "ati.tasks.check_sla_and_alert_task",
             "schedule": 900.0,
         },
 
@@ -104,11 +104,11 @@ celery_app.conf.update(
         # STIX / SIEM - export and forward
         # ═══════════════════════════════════════════════════════════
         "stix-export-1h": {
-            "task": "arguswatch.engine.stix_exporter.run_stix_export_task",
+            "task": "ati.engine.stix_exporter.run_stix_export_task",
             "schedule": 3600.0,
         },
         "siem-forward-15m": {
-            "task": "arguswatch.engine.syslog_exporter.run_syslog_task",
+            "task": "ati.engine.syslog_exporter.run_syslog_task",
             "schedule": 900.0,
         },
 
@@ -116,11 +116,11 @@ celery_app.conf.update(
         # PIPELINE BATCH - catch-all for missed detections
         # ═══════════════════════════════════════════════════════════
         "pipeline-batch-5m": {
-            "task": "arguswatch.services.ingest_pipeline.process_new_detections_batch",
+            "task": "ati.services.ingest_pipeline.process_new_detections_batch",
             "schedule": 300.0,
         },
         "recheck-findings-hourly": {
-            "task": "arguswatch.services.ingest_pipeline.recheck_open_findings",
+            "task": "ati.services.ingest_pipeline.recheck_open_findings",
             "schedule": 3600.0,
         },
 
@@ -128,7 +128,7 @@ celery_app.conf.update(
         # EXPOSURE HISTORY - daily snapshot for trend charts
         # ═══════════════════════════════════════════════════════════
         "exposure-snapshot-daily": {
-            "task": "arguswatch.tasks.snapshot_exposure_history",
+            "task": "ati.tasks.snapshot_exposure_history",
             "schedule": 86400.0,  # 24 hours
         },
 
@@ -136,11 +136,11 @@ celery_app.conf.update(
         # V16.4: AGENTIC AI TASKS
         # ═══════════════════════════════════════════════════════════
         "darkweb-triage-30min": {
-            "task": "arguswatch.tasks.darkweb_triage_task",
+            "task": "ati.tasks.darkweb_triage_task",
             "schedule": 1800.0,  # 30 min - triage untriaged dark web mentions
         },
         "sector-detection-6h": {
-            "task": "arguswatch.tasks.sector_campaign_detection_task",
+            "task": "ati.tasks.sector_campaign_detection_task",
             "schedule": 21600.0,  # 6 hours - cross-customer IOC correlation
         },
 
@@ -148,23 +148,23 @@ celery_app.conf.update(
         # DATA RETENTION - prevent unbounded DB growth
         # ═══════════════════════════════════════════════════════════
         "data-cleanup-nightly": {
-            "task": "arguswatch.tasks.data_cleanup",
+            "task": "ati.tasks.data_cleanup",
             "schedule": 86400.0,  # 24 hours
         },
 
         # V16.4.7: MITRE ATT&CK auto-sync -  weekly
         "mitre-attack-sync-weekly": {
-            "task": "arguswatch.tasks.mitre_sync_task",
+            "task": "ati.tasks.mitre_sync_task",
             "schedule": 604800.0,  # 7 days
         },
     },
 )
 
 celery_app.autodiscover_tasks([
-    "arguswatch.tasks",
-    "arguswatch.collectors",
-    "arguswatch.collectors._pipeline_hook",
-    "arguswatch.collectors.enterprise",
-    "arguswatch.engine",
-    "arguswatch.services",
+    "ati.tasks",
+    "ati.collectors",
+    "ati.collectors._pipeline_hook",
+    "ati.collectors.enterprise",
+    "ati.engine",
+    "ati.services",
 ])

@@ -31,8 +31,8 @@ log = logging.getLogger("recon")
 
 # ── DB ──
 PG = {k: os.getenv(k, d) for k, d in [
-    ("POSTGRES_USER","arguswatch"),("POSTGRES_PASSWORD","arguswatch_dev_2026"),
-    ("POSTGRES_HOST","postgres"),("POSTGRES_PORT","5432"),("POSTGRES_DB","arguswatch")]}
+    ("POSTGRES_USER","ati"),("POSTGRES_PASSWORD","ati_dev_2026"),
+    ("POSTGRES_HOST","postgres"),("POSTGRES_PORT","5432"),("POSTGRES_DB","ati")]}
 DB_URL = f"postgresql+asyncpg://{PG['POSTGRES_USER']}:{PG['POSTGRES_PASSWORD']}@{PG['POSTGRES_HOST']}:{PG['POSTGRES_PORT']}/{PG['POSTGRES_DB']}"
 engine = create_async_engine(DB_URL, pool_size=5)
 ASession = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)

@@ -42,7 +42,7 @@ class TestSchemaAlignment:
     def test_sql_tables_match_models(self):
         """Every SQL table must have a Python ORM model."""
         sql_dir = os.path.join(PROJECT_ROOT, "initdb")
-        models_path = os.path.join(PROJECT_ROOT, "backend", "arguswatch", "models.py")
+        models_path = os.path.join(PROJECT_ROOT, "backend", "ati", "models.py")
 
         sql_tables = set()
         for f in sorted(os.listdir(sql_dir)):
@@ -57,7 +57,7 @@ class TestSchemaAlignment:
         assert not missing, f"SQL tables without ORM models: {missing}"
 
     def test_models_parse_valid(self):
-        models_path = os.path.join(PROJECT_ROOT, "backend", "arguswatch", "models.py")
+        models_path = os.path.join(PROJECT_ROOT, "backend", "ati", "models.py")
         content = open(models_path).read()
         ast.parse(content)  # raises SyntaxError if invalid
 
@@ -65,7 +65,7 @@ class TestSchemaAlignment:
 class TestFileIntegrity:
     def test_all_python_files_parse(self):
         """Every .py file in backend/ must be valid Python."""
-        backend = os.path.join(PROJECT_ROOT, "backend", "arguswatch")
+        backend = os.path.join(PROJECT_ROOT, "backend", "ati")
         errors = []
         for root, dirs, files in os.walk(backend):
             dirs[:] = [d for d in dirs if d != "__pycache__"]

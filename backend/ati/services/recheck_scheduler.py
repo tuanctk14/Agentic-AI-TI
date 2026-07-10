@@ -6,7 +6,7 @@ import logging
 from datetime import datetime, timezone, timedelta
 from ati.celery_app import celery_app
 
-logger = logging.getLogger("arguswatch.services.recheck")
+logger = logging.getLogger("ati.services.recheck")
 
 def schedule_recheck(detection_id: int, customer_id: int, ioc_type: str, ioc_value: str):
     """Schedule a 72h re-check via Celery ETA."""
@@ -18,7 +18,7 @@ def schedule_recheck(detection_id: int, customer_id: int, ioc_type: str, ioc_val
     )
     logger.info(f"72h re-check scheduled for detection {detection_id} at {eta}")
 
-@celery_app.task(name="arguswatch.services.recheck_scheduler.perform_recheck", bind=True, max_retries=2)
+@celery_app.task(name="ati.services.recheck_scheduler.perform_recheck", bind=True, max_retries=2)
 def perform_recheck(self, detection_id: int, customer_id: int, ioc_type: str, ioc_value: str):
     """Re-scan IOC at 72h mark. Re-open if still detected."""
     import asyncio

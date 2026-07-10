@@ -22,7 +22,7 @@ from ati.models import (
 )
 from ati.services.exposure_scorer import calculate_all_exposures, calculate_customer_exposure, get_customer_top_threats, get_customer_risk_summary
 
-logger = logging.getLogger("arguswatch.api.settings")
+logger = logging.getLogger("ati.api.settings")
 
 def _sev(val):
     """Safe severity value extraction - handles both enum and string."""
@@ -117,7 +117,7 @@ async def get_ai_settings():
     rag_available = False
     try:
         import importlib
-        importlib.import_module("arguswatch.services.ai_rag_context")
+        importlib.import_module("ati.services.ai_rag_context")
         rag_available = True
     except Exception as e:
         logger.debug(f"Suppressed: {e}")

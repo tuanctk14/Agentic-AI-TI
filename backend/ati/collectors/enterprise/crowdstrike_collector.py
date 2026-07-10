@@ -6,7 +6,7 @@ import logging, asyncio
 from ati.config import settings
 from ati.celery_app import celery_app
 
-logger = logging.getLogger("arguswatch.collectors.enterprise.crowdstrike")
+logger = logging.getLogger("ati.collectors.enterprise.crowdstrike")
 
 async def run_collection() -> dict:
     key = getattr(settings, "CROWDSTRIKE_CLIENT_ID", "") or ""
@@ -18,6 +18,6 @@ async def run_collection() -> dict:
     logger.info("Crowdstrike: key present - enterprise source ready")
     return {"status": "key_present", "source": "crowdstrike", "note": "Full implementation on enterprise activation"}
 
-@celery_app.task(name="arguswatch.collectors.enterprise.crowdstrike_collector.collect_crowdstrike")
+@celery_app.task(name="ati.collectors.enterprise.crowdstrike_collector.collect_crowdstrike")
 def collect_crowdstrike():
     return asyncio.run(run_collection())

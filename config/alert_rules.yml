@@ -1,9 +1,9 @@
 groups:
- - name: arguswatch_alerts
+ - name: ati_alerts
     rules:
       # Backend down
      - alert: BackendDown
-        expr: up{job="arguswatch-backend"} == 0
+        expr: up{job="ati-backend"} == 0
         for: 2m
         labels:
           severity: critical
@@ -14,8 +14,8 @@ groups:
       # High error rate
      - alert: HighErrorRate
         expr: |
-          sum(rate(arguswatch_http_requests_total{status=~"5.."}[5m]))
-          / sum(rate(arguswatch_http_requests_total[5m])) > 0.05
+          sum(rate(ati_http_requests_total{status=~"5.."}[5m]))
+          / sum(rate(ati_http_requests_total[5m])) > 0.05
         for: 5m
         labels:
           severity: warning
@@ -25,7 +25,7 @@ groups:
 
       # Open critical findings spike
      - alert: CriticalFindingsSpike
-        expr: arguswatch_findings_open > 100
+        expr: ati_findings_open > 100
         for: 10m
         labels:
           severity: warning
@@ -35,7 +35,7 @@ groups:
 
       # Collector stale (no run in 2 hours)
      - alert: CollectorStale
-        expr: (time() - arguswatch_collectors_last_run) > 7200
+        expr: (time() - ati_collectors_last_run) > 7200
         for: 15m
         labels:
           severity: warning
@@ -46,8 +46,8 @@ groups:
       # High request latency
      - alert: HighLatency
         expr: |
-          arguswatch_http_request_duration_seconds_sum
-          / arguswatch_http_request_duration_seconds_count > 2
+          ati_http_request_duration_seconds_sum
+          / ati_http_request_duration_seconds_count > 2
         for: 5m
         labels:
           severity: warning

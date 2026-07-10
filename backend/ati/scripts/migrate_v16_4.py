@@ -1,7 +1,7 @@
 """V16.4 Migration - fixes AssetType enum gap, adds match_proof and manual_entry columns,
 plus all Agentic AI tables (FP Memory, Sector Advisories, Dark Web Triage).
 
-Run: python -m arguswatch.scripts.migrate_v16_4
+Run: python -m ati.scripts.migrate_v16_4
 Or applied automatically via initdb/08_migrate_v16_4.sql on fresh deploy.
 """
 import asyncio

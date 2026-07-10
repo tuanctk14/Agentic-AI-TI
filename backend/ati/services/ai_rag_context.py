@@ -35,7 +35,7 @@ def _sev(val):
     return val.value if hasattr(val, "value") else str(val)
 
 
-logger = logging.getLogger("arguswatch.rag")
+logger = logging.getLogger("ati.rag")
 
 
 async def find_related_findings(

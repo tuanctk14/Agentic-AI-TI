@@ -6,7 +6,7 @@ from ati.models import Detection, SeverityLevel, DetectionStatus
 from ati.celery_app import celery_app
 from ati.collectors._pipeline_hook import trigger_pipeline_for_new, record_collector_run
 
-logger = logging.getLogger("arguswatch.collectors.threatfox")
+logger = logging.getLogger("ati.collectors.threatfox")
 
 THREATFOX_URL = "https://threatfox-api.abuse.ch/api/v1/"
 
@@ -51,7 +51,7 @@ async def run_collection() -> dict:
     logger.info(f"ThreatFox ingest: {stats}")
     return stats
 
-@celery_app.task(name="arguswatch.collectors.threatfox_collector.collect_threatfox")
+@celery_app.task(name="ati.collectors.threatfox_collector.collect_threatfox")
 def collect_threatfox():
     import asyncio
     async def _wrapped():

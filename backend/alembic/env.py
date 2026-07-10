@@ -19,11 +19,11 @@ target_metadata = Base.metadata
 
 # Build DATABASE_URL from env (same vars docker-compose passes)
 def get_url() -> str:
-    user = os.getenv("POSTGRES_USER", "arguswatch")
-    pw = os.getenv("POSTGRES_PASSWORD", "arguswatch_dev_2026")
+    user = os.getenv("POSTGRES_USER", "ati")
+    pw = os.getenv("POSTGRES_PASSWORD", "ati_dev_2026")
     host = os.getenv("POSTGRES_HOST", "localhost")
     port = os.getenv("POSTGRES_PORT", "5432")
-    db = os.getenv("POSTGRES_DB", "arguswatch")
+    db = os.getenv("POSTGRES_DB", "ati")
     return f"postgresql://{user}:{pw}@{host}:{port}/{db}"
 
 

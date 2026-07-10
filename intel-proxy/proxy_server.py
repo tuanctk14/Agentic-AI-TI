@@ -26,11 +26,11 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(name)s] %(message
 log = logging.getLogger("intel-proxy")
 
 # ── DB connection (same postgres as backend) ──
-PG_USER = os.getenv("POSTGRES_USER", "arguswatch")
+PG_USER = os.getenv("POSTGRES_USER", "ati")
 PG_PASS = os.environ["POSTGRES_PASSWORD"]  # Required -  no default
 PG_HOST = os.getenv("POSTGRES_HOST", "postgres")
 PG_PORT = os.getenv("POSTGRES_PORT", "5432")
-PG_DB   = os.getenv("POSTGRES_DB", "arguswatch")
+PG_DB   = os.getenv("POSTGRES_DB", "ati")
 DB_URL  = f"postgresql+asyncpg://{PG_USER}:{PG_PASS}@{PG_HOST}:{PG_PORT}/{PG_DB}"
 
 engine = create_async_engine(DB_URL, pool_size=5, max_overflow=5)
@@ -913,7 +913,7 @@ async def search_compromise(query: str):
 
         for hit in exact_hits:
             results["findings"].append({
-                "source": "arguswatch_db", "match_type": "exact",
+                "source": "ati_db", "match_type": "exact",
                 "detection_id": hit[0], "feed": hit[1], "ioc_type": hit[2],
                 "ioc_value": hit[3], "severity": hit[4],
                 "context": (hit[5] or "")[:200],
@@ -921,7 +921,7 @@ async def search_compromise(query: str):
             })
         for hit in partial_hits:
             results["findings"].append({
-                "source": "arguswatch_db", "match_type": "partial",
+                "source": "ati_db", "match_type": "partial",
                 "detection_id": hit[0], "feed": hit[1], "ioc_type": hit[2],
                 "ioc_value": hit[3], "severity": hit[4],
                 "context": (hit[5] or "")[:200],
@@ -929,7 +929,7 @@ async def search_compromise(query: str):
             })
         for hit in finding_hits:
             results["findings"].append({
-                "source": "arguswatch_findings", "match_type": "finding",
+                "source": "ati_findings", "match_type": "finding",
                 "finding_id": hit[0], "ioc_type": hit[1],
                 "ioc_value": hit[2], "severity": hit[3],
                 "context": (hit[4] or "")[:200],

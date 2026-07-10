@@ -11,7 +11,7 @@ from ati.models import Detection, DarkWebMention, SeverityLevel, DetectionStatus
 from ati.celery_app import celery_app
 from ati.collectors._pipeline_hook import trigger_pipeline_for_new, record_collector_run
 
-logger = logging.getLogger("arguswatch.collectors.vxug_darkfeed")
+logger = logging.getLogger("ati.collectors.vxug_darkfeed")
 
 VXUG_SAMPLES_RSS = "https://vx-underground.org/samples.rss"
 VXUG_PAPERS_RSS = "https://vx-underground.org/papers.rss"
@@ -181,7 +181,7 @@ async def run_collection() -> dict:
     return stats
 
 
-@celery_app.task(name="arguswatch.collectors.vxug_darkfeed.collect_vxug_darkfeed")
+@celery_app.task(name="ati.collectors.vxug_darkfeed.collect_vxug_darkfeed")
 def collect_vxug_darkfeed():
     async def _wrapped():
         async with record_collector_run("vxug_darkfeed") as ctx:

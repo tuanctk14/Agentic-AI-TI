@@ -42,7 +42,7 @@ try:
 except ImportError:
     BeautifulSoup = None
 
-logger = logging.getLogger("arguswatch.intel-proxy.collectors")
+logger = logging.getLogger("ati.intel-proxy.collectors")
 
 # ── API key constants (read from environment) ──
 VT_KEY        = os.getenv("VIRUSTOTAL_API_KEY", "")

@@ -18,7 +18,7 @@ def _sev(val):
     return val.value if hasattr(val, "value") else str(val)
 
 
-logger = logging.getLogger("arguswatch.agent.tools")
+logger = logging.getLogger("ati.agent.tools")
 
 # ── Tool 1: query_database ──
 async def query_database(query: str, customer_name: str = "", severity: str = "",
@@ -200,7 +200,7 @@ async def search_telegram(keyword: str, channel: str = "") -> dict:
         return {"skipped": "no_credentials", "note": "Add TELEGRAM_API_ID/HASH to .env"}
     try:
         from telethon import TelegramClient
-        client = TelegramClient("arguswatch_search", int(api_id), api_hash)
+        client = TelegramClient("ati_search", int(api_id), api_hash)
         await client.start()
         results = []
         target = channel or "darkwebinformer"

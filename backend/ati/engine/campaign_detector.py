@@ -28,7 +28,7 @@ def _sev(val):
     return val.value if hasattr(val, "value") else str(val)
 
 
-logger = logging.getLogger("arguswatch.engine.campaign_detector")
+logger = logging.getLogger("ati.engine.campaign_detector")
 
 CAMPAIGN_WINDOW_DAYS = 14
 CAMPAIGN_THRESHOLD = 3      # minimum distinct findings to declare a campaign

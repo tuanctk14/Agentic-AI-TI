@@ -210,8 +210,8 @@ docker compose down
 docker compose down -v && docker compose up -d --build
 
 # View logs
-docker logs arguswatch-backend --tail 50
-docker logs arguswatch-intel-proxy --tail 50
+docker logs ati-backend --tail 50
+docker logs ati-intel-proxy --tail 50
 
 # Rebuild single service
 docker compose build --no-cache backend && docker compose up -d
@@ -311,23 +311,23 @@ docker compose build --no-cache backend && docker compose up -d
 
 | # | Service | Container | Port | What it does |
 |---|---------|-----------|------|-------------|
-| 1 | **backend** | arguswatch-backend | 8000 | FastAPI app -  matching, correlation, AI pipeline, API |
-| 2 | **intel-proxy** | arguswatch-intel-proxy | 9999 | 47 collectors, pattern matcher, grep.app, crt.sh |
-| 3 | **postgres** | arguswatch-postgres | 5432 | PostgreSQL 16 + Row Level Security (multi-tenant) |
-| 4 | **redis** | arguswatch-redis | 6379 | Celery broker, AI provider state, caching |
-| 5 | **ollama** | arguswatch-ollama | 11434 | Qwen 3 8B -  local AI (auto-pulls on first boot) |
-| 6 | **recon-engine** | arguswatch-recon | 8888 | Subdomain enumeration, DNS, certificate scanning |
-| 7 | **celery_worker** | arguswatch-celery-worker | -  | Background pipeline processing |
-| 8 | **celery_beat** | arguswatch-celery-beat | -  | Scheduled collection every 30-60 min |
+| 1 | **backend** | ati-backend | 8000 | FastAPI app -  matching, correlation, AI pipeline, API |
+| 2 | **intel-proxy** | ati-intel-proxy | 9999 | 47 collectors, pattern matcher, grep.app, crt.sh |
+| 3 | **postgres** | ati-postgres | 5432 | PostgreSQL 16 + Row Level Security (multi-tenant) |
+| 4 | **redis** | ati-redis | 6379 | Celery broker, AI provider state, caching |
+| 5 | **ollama** | ati-ollama | 11434 | Qwen 3 8B -  local AI (auto-pulls on first boot) |
+| 6 | **recon-engine** | ati-recon | 8888 | Subdomain enumeration, DNS, certificate scanning |
+| 7 | **celery_worker** | ati-celery-worker | -  | Background pipeline processing |
+| 8 | **celery_beat** | ati-celery-beat | -  | Scheduled collection every 30-60 min |
 | 9 | **nginx** | aw-nginx | **7777** | Reverse proxy, serves dashboard to browser |
-| 10 | **prometheus** | arguswatch-prometheus | 9090 | Metrics collection + health monitoring |
+| 10 | **prometheus** | ati-prometheus | 9090 | Metrics collection + health monitoring |
 
 ---
 
 ## 📂 Code Structure
 
 ```
-arguswatch-v16.4.7/
+ati-v16.4.7/
 │
 ├── 📄 README.md                              # This file
 ├── 📄 CHANGELOG-v16.4.7.md                   # 20 bug fixes documented
@@ -586,20 +586,20 @@ docker compose down
 docker compose ps
 
 # Follow backend logs
-docker logs arguswatch-backend -f --tail=50
+docker logs ati-backend -f --tail=50
 
 # Follow Ollama logs (AI model status)
-docker logs arguswatch-ollama -f --tail=20
+docker logs ati-ollama -f --tail=20
 
 # Follow intel-proxy logs (collector activity)
-docker logs arguswatch-intel-proxy -f --tail=20
+docker logs ati-intel-proxy -f --tail=20
 ```
 
 ### Data Management
 
 ```bash
 # Check database counts
-docker exec arguswatch-postgres psql -U arguswatch -d arguswatch -c \
+docker exec ati-postgres psql -U ati -d ati -c \
   "SELECT 'findings' as t, COUNT(*) FROM findings
    UNION ALL SELECT 'detections', COUNT(*) FROM detections
    UNION ALL SELECT 'customers', COUNT(*) FROM customers
@@ -607,16 +607,16 @@ docker exec arguswatch-postgres psql -U arguswatch -d arguswatch -c \
    UNION ALL SELECT 'actors', COUNT(*) FROM threat_actors;"
 
 # Check AI triage progress
-docker exec arguswatch-postgres psql -U arguswatch -d arguswatch -c \
+docker exec ati-postgres psql -U ati -d ati -c \
   "SELECT COUNT(*) as triaged FROM findings WHERE ai_provider IS NOT NULL;
    SELECT COUNT(*) as untriaged FROM findings WHERE ai_provider IS NULL;"
 
 # Check collector IOC counts
-docker exec arguswatch-postgres psql -U arguswatch -d arguswatch -c \
+docker exec ati-postgres psql -U ati -d ati -c \
   "SELECT source, COUNT(*) as iocs FROM detections GROUP BY source ORDER BY iocs DESC LIMIT 15;"
 
 # Export findings to CSV
-docker exec arguswatch-postgres psql -U arguswatch -d arguswatch -c \
+docker exec ati-postgres psql -U ati -d ati -c \
   "COPY (SELECT * FROM findings ORDER BY created_at DESC) TO STDOUT WITH CSV HEADER;" > findings.csv
 ```
 
@@ -624,14 +624,14 @@ docker exec arguswatch-postgres psql -U arguswatch -d arguswatch -c \
 
 ```bash
 # Check if Ollama model is loaded
-docker exec arguswatch-ollama ollama list
+docker exec ati-ollama ollama list
 
 # Test Ollama connectivity from backend
-docker exec arguswatch-backend python -c \
+docker exec ati-backend python -c \
   "import httpx; r=httpx.get('http://ollama:11434/api/tags'); print(r.status_code, r.text[:200])"
 
 # Check backend environment variables
-docker exec arguswatch-backend env | grep -E "OLLAMA|ANTHROPIC|OPENAI|AUTH"
+docker exec ati-backend env | grep -E "OLLAMA|ANTHROPIC|OPENAI|AUTH"
 
 # Restart single service (without touching others)
 docker compose restart backend
@@ -639,7 +639,7 @@ docker compose restart ollama
 docker compose restart intel-proxy
 
 # View PostgreSQL live queries
-docker exec arguswatch-postgres psql -U arguswatch -d arguswatch -c \
+docker exec ati-postgres psql -U ati -d ati -c \
   "SELECT pid, state, LEFT(query,80) FROM pg_stat_activity WHERE state='active';"
 ```
 
@@ -664,13 +664,13 @@ docker system prune -af --volumes
 
 ```bash
 # All 110 tests
-docker exec arguswatch-backend python -m pytest tests/ -v
+docker exec ati-backend python -m pytest tests/ -v
 
 # Specific test file
-docker exec arguswatch-backend python -m pytest tests/test_matching_strategies.py -v
+docker exec ati-backend python -m pytest tests/test_matching_strategies.py -v
 
 # Quick test count
-docker exec arguswatch-backend python -m pytest tests/ -q
+docker exec ati-backend python -m pytest tests/ -q
 ```
 
 ---
@@ -694,13 +694,13 @@ AUTH_DISABLED: true                # No login (default)
 
 ```bash
 # All tests (157 total)
-docker exec arguswatch-backend python -m pytest tests/ -v
+docker exec ati-backend python -m pytest tests/ -v
 
 # Integration tests only -  quick smoke (no DB needed, 2s):
-docker exec arguswatch-backend python -m pytest tests/test_integration.py -v -k "not requires_db"
+docker exec ati-backend python -m pytest tests/test_integration.py -v -k "not requires_db"
 
 # Integration tests -  full (requires running PostgreSQL):
-docker exec arguswatch-backend python -m pytest tests/test_integration.py -v
+docker exec ati-backend python -m pytest tests/test_integration.py -v
 ```
 
 | Test File | Tests | What it covers |

@@ -18,7 +18,7 @@ def _sev(val):
     return val.value if hasattr(val, "value") else str(val)
 
 
-logger = logging.getLogger("arguswatch.pdf_report")
+logger = logging.getLogger("ati.pdf_report")
 
 OUTPUT_DIR = Path("/app/reports")
 

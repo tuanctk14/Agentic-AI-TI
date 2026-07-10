@@ -6,7 +6,7 @@ import logging, asyncio
 from ati.config import settings
 from ati.celery_app import celery_app
 
-logger = logging.getLogger("arguswatch.collectors.enterprise.cyberint")
+logger = logging.getLogger("ati.collectors.enterprise.cyberint")
 
 async def run_collection() -> dict:
     key = getattr(settings, "CYBERINT_API_KEY", "") or ""
@@ -18,6 +18,6 @@ async def run_collection() -> dict:
     logger.info("Cyberint: key present - enterprise source ready")
     return {"status": "key_present", "source": "cyberint", "note": "Full implementation on enterprise activation"}
 
-@celery_app.task(name="arguswatch.collectors.enterprise.cyberint_collector.collect_cyberint")
+@celery_app.task(name="ati.collectors.enterprise.cyberint_collector.collect_cyberint")
 def collect_cyberint():
     return asyncio.run(run_collection())

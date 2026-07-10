@@ -29,7 +29,7 @@ from sqlalchemy import select, func, text
 
 from ati.models import Detection, Finding, Customer, SeverityLevel, DetectionStatus
 
-logger = logging.getLogger("arguswatch.edr")
+logger = logging.getLogger("ati.edr")
 
 
 async def ingest_edr_telemetry(customer_id: int, observations: list[dict], db: AsyncSession) -> dict:

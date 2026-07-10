@@ -22,7 +22,7 @@ from datetime import datetime
 from ati.config import settings
 from ati.utils import sanitize_for_llm
 
-logger = logging.getLogger("arguswatch.ai_pipeline")
+logger = logging.getLogger("ati.ai_pipeline")
 
 
 # ── DB-backed prompt loader -  reads from cache, NO new DB session ──
@@ -54,7 +54,7 @@ async def _load_prompt(hook_name: str, industry: str = "") -> str:
 
 
 # ── Redis-backed active provider (shared between FastAPI + Celery) ──
-_REDIS_PROVIDER_KEY = "arguswatch:active_provider"
+_REDIS_PROVIDER_KEY = "ati:active_provider"
 
 def _get_active_provider_from_redis() -> str:
     """Read active provider from Redis. Falls back to config if Redis unavailable."""

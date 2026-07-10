@@ -47,7 +47,7 @@ def _safe_val(text, max_len: int = 200) -> str:
     return cleaned[:max_len] if len(cleaned) > max_len else cleaned
 
 
-logger = logging.getLogger("arguswatch.engine.action_generator")
+logger = logging.getLogger("ati.engine.action_generator")
 
 # IOC type -> playbook key mapping (base)
 IOC_TO_PLAYBOOK = {

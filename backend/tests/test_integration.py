@@ -10,7 +10,7 @@ TWO MODES:
      auth flows, input validation. Works anywhere -  no Docker needed.
   2. With DB (inside Docker): Full end-to-end: onboard customer -> create
      detection -> verify finding -> check exposure. Run with:
-     docker exec arguswatch-backend pytest tests/test_integration.py -v
+     docker exec ati-backend pytest tests/test_integration.py -v
 
 WHY THIS MATTERS:
   The 110 existing tests are unit tests that mock the DB. They verify
@@ -23,7 +23,7 @@ RUN:
   pytest tests/test_integration.py -v -k "not requires_db"
 
   # Full (requires running PostgreSQL -  run inside Docker):
-  docker exec arguswatch-backend pytest tests/test_integration.py -v
+  docker exec ati-backend pytest tests/test_integration.py -v
 """
 import os
 import pytest

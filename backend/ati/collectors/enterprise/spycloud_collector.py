@@ -6,7 +6,7 @@ import logging, asyncio
 from ati.config import settings
 from ati.celery_app import celery_app
 
-logger = logging.getLogger("arguswatch.collectors.enterprise.spycloud")
+logger = logging.getLogger("ati.collectors.enterprise.spycloud")
 
 async def run_collection() -> dict:
     key = getattr(settings, "SPYCLOUD_API_KEY", "") or ""
@@ -18,6 +18,6 @@ async def run_collection() -> dict:
     logger.info("Spycloud: key present - enterprise source ready")
     return {"status": "key_present", "source": "spycloud", "note": "Full implementation on enterprise activation"}
 
-@celery_app.task(name="arguswatch.collectors.enterprise.spycloud_collector.collect_spycloud")
+@celery_app.task(name="ati.collectors.enterprise.spycloud_collector.collect_spycloud")
 def collect_spycloud():
     return asyncio.run(run_collection())

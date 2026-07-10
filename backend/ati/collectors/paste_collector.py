@@ -10,7 +10,7 @@ from ati.engine.severity_scorer import score as score_ioc
 from ati.celery_app import celery_app
 from ati.collectors._pipeline_hook import trigger_pipeline_for_new, record_collector_run
 
-logger = logging.getLogger("arguswatch.collectors.paste")
+logger = logging.getLogger("ati.collectors.paste")
 
 PASTE_SOURCES = [
     {"name": "pastebin",   "url": "https://scrape.pastebin.com/api_scraping.php?limit=100", "type": "json"},
@@ -74,7 +74,7 @@ async def run_collection(customer_domains: list[str] | None = None) -> dict:
         await trigger_pipeline_for_new(db)
     return stats
 
-@celery_app.task(name="arguswatch.collectors.paste_collector.collect_pastes")
+@celery_app.task(name="ati.collectors.paste_collector.collect_pastes")
 def collect_pastes():
     import asyncio
     async def _wrapped():

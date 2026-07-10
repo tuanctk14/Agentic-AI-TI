@@ -9,7 +9,7 @@ from ati.celery_app import celery_app
 from ati.collectors._pipeline_hook import trigger_pipeline_for_new, record_collector_run
 from sqlalchemy import select
 
-logger = logging.getLogger("arguswatch.collectors.socradar")
+logger = logging.getLogger("ati.collectors.socradar")
 
 SOCRADAR_BASE = "https://platform.socradar.com/api"
 
@@ -71,7 +71,7 @@ async def run_collection() -> dict:
     logger.info(f"SocRadar ingest: {stats}")
     return stats
 
-@celery_app.task(name="arguswatch.collectors.socradar_collector.collect_socradar")
+@celery_app.task(name="ati.collectors.socradar_collector.collect_socradar")
 def collect_socradar():
     async def _wrapped():
         async with record_collector_run("socradar") as ctx:

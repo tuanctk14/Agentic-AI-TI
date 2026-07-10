@@ -10,7 +10,7 @@ from ati.celery_app import celery_app
 from ati.collectors._pipeline_hook import trigger_pipeline_for_new, record_collector_run
 from sqlalchemy import select
 
-logger = logging.getLogger("arguswatch.collectors.breach")
+logger = logging.getLogger("ati.collectors.breach")
 
 HIBP_BASE = "https://haveibeenpwned.com/api/v3"
 BREACHDIR_BASE = "https://breachdirectory.org/api"
@@ -182,7 +182,7 @@ async def run_collection() -> dict:
     logger.info(f"Breach ingest: {stats}")
     return stats
 
-@celery_app.task(name="arguswatch.collectors.breach_collector.collect_breach")
+@celery_app.task(name="ati.collectors.breach_collector.collect_breach")
 def collect_breach():
     async def _wrapped():
         async with record_collector_run("breach") as ctx:

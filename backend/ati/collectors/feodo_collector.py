@@ -6,7 +6,7 @@ from ati.models import Detection, SeverityLevel, DetectionStatus
 from ati.celery_app import celery_app
 from ati.collectors._pipeline_hook import trigger_pipeline_for_new, record_collector_run
 
-logger = logging.getLogger("arguswatch.collectors.feodo")
+logger = logging.getLogger("ati.collectors.feodo")
 
 FEODO_JSON_URL = "https://feodotracker.abuse.ch/downloads/ipblocklist.json"
 
@@ -42,7 +42,7 @@ async def run_collection() -> dict:
     logger.info(f"Feodo ingest: {stats}")
     return stats
 
-@celery_app.task(name="arguswatch.collectors.feodo_collector.collect_feodo")
+@celery_app.task(name="ati.collectors.feodo_collector.collect_feodo")
 def collect_feodo():
     import asyncio
     async def _wrapped():

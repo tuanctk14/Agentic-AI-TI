@@ -7,7 +7,7 @@ from ati.models import Detection, SeverityLevel, DetectionStatus
 from ati.celery_app import celery_app
 from ati.collectors._pipeline_hook import trigger_pipeline_for_new, record_collector_run
 
-logger = logging.getLogger("arguswatch.collectors.rss")
+logger = logging.getLogger("ati.collectors.rss")
 
 RSS_FEEDS = [
     {"name": "krebs",   "url": "https://krebsonsecurity.com/feed/", "severity": SeverityLevel.HIGH},
@@ -62,7 +62,7 @@ async def run_collection() -> dict:
         await db.commit()
     return stats
 
-@celery_app.task(name="arguswatch.collectors.rss_collector.collect_rss")
+@celery_app.task(name="ati.collectors.rss_collector.collect_rss")
 def collect_rss():
     import asyncio
     async def _wrapped():

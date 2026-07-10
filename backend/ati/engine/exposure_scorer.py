@@ -39,7 +39,7 @@ from ati.models import (
     CveProductMap, Finding, GlobalThreatActivity, ProbableExposure,
 )
 
-logger = logging.getLogger("arguswatch.engine.exposure_scorer")
+logger = logging.getLogger("ati.engine.exposure_scorer")
 
 # Option 4 formula weights are hardcoded in score_customer_actor():
 #   Base = max((D1×0.50 + D2×0.30 + D3×0.20), D4×0.20)
@@ -1072,7 +1072,7 @@ async def get_customer_risk_summary(customer_id: int, db: AsyncSession) -> dict:
 
 from ati.celery_app import celery_app as _celery_app
 
-@_celery_app.task(name="arguswatch.engine.exposure_scorer.run_exposure_task")
+@_celery_app.task(name="ati.engine.exposure_scorer.run_exposure_task")
 def run_exposure_task():
     import asyncio
     from ati.database import async_session

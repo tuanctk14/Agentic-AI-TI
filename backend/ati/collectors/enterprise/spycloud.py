@@ -1,7 +1,7 @@
 """SpyCloud Enterprise - live stealer log ingestion, active_session:true confirmation. SPYCLOUD_API_KEY required."""
 import logging
 from ati.config import settings
-logger = logging.getLogger("arguswatch.collectors.enterprise.spycloud")
+logger = logging.getLogger("ati.collectors.enterprise.spycloud")
 
 async def run_collection() -> dict:
     if not settings.SPYCLOUD_API_KEY:

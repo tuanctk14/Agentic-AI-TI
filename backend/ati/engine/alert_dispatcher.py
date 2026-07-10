@@ -16,7 +16,7 @@ def _sev(val):
     return val.value if hasattr(val, "value") else str(val)
 
 
-logger = logging.getLogger("arguswatch.engine.alert_dispatcher")
+logger = logging.getLogger("ati.engine.alert_dispatcher")
 
 async def send_slack(message: str, webhook_url: str = "") -> bool:
     url = webhook_url or getattr(settings, "SLACK_WEBHOOK_URL", "")
@@ -34,7 +34,7 @@ def send_email(subject: str, body: str, to_email: str) -> bool:
     try:
         msg = MIMEMultipart("alternative")
         msg["Subject"] = subject
-        msg["From"] = getattr(settings, "SMTP_USER", "arguswatch@solventcyber.com")
+        msg["From"] = getattr(settings, "SMTP_USER", "ati@solventcyber.com")
         msg["To"] = to_email
         msg.attach(MIMEText(body, "plain"))
         port = int(getattr(settings, "SMTP_PORT", 587))

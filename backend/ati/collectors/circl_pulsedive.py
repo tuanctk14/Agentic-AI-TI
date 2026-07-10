@@ -10,7 +10,7 @@ from ati.config import settings
 from ati.celery_app import celery_app
 from ati.collectors._pipeline_hook import trigger_pipeline_for_new, record_collector_run
 
-logger = logging.getLogger("arguswatch.collectors.circl_pulsedive")
+logger = logging.getLogger("ati.collectors.circl_pulsedive")
 
 CIRCL_FEED = "https://www.circl.lu/doc/misp/feed-osint/"
 CIRCL_MANIFEST = "https://www.circl.lu/doc/misp/feed-osint/manifest.json"
@@ -197,7 +197,7 @@ async def run_collection() -> dict:
     return stats
 
 
-@celery_app.task(name="arguswatch.collectors.circl_pulsedive.collect_circl_pulsedive")
+@celery_app.task(name="ati.collectors.circl_pulsedive.collect_circl_pulsedive")
 def collect_circl_pulsedive():
     async def _wrapped():
         async with record_collector_run("circl_pulsedive") as ctx:

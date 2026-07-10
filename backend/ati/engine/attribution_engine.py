@@ -18,7 +18,7 @@ from ati.models import (
     Customer, ActorIoc, CveProductMap, SeverityLevel
 )
 
-logger = logging.getLogger("arguswatch.engine.attribution")
+logger = logging.getLogger("ati.engine.attribution")
 
 try:
     from ati.config import settings as _attr_settings
@@ -402,7 +402,7 @@ async def run_attribution_pass(db: AsyncSession, limit: int = 200) -> dict:
 from ati.celery_app import celery_app as _celery_app
 
 
-@_celery_app.task(name="arguswatch.engine.attribution_engine.run_attribution_task")
+@_celery_app.task(name="ati.engine.attribution_engine.run_attribution_task")
 def run_attribution_task():
     import asyncio
     from ati.database import async_session

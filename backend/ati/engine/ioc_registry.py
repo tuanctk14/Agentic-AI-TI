@@ -49,7 +49,7 @@ from typing import Optional
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, text
 
-logger = logging.getLogger("arguswatch.ioc_registry")
+logger = logging.getLogger("ati.ioc_registry")
 
 # ══════════════════════════════════════════════════════════════════════
 # IN-MEMORY CACHE -  refreshes every 60 seconds

@@ -26,7 +26,7 @@ def _sev(val):
     return val.value if hasattr(val, "value") else str(val)
 
 
-logger = logging.getLogger("arguswatch.ingest_pipeline")
+logger = logging.getLogger("ati.ingest_pipeline")
 
 
 # ═══════════════════════════════════════════════════════════════════════
@@ -34,7 +34,7 @@ logger = logging.getLogger("arguswatch.ingest_pipeline")
 # ═══════════════════════════════════════════════════════════════════════
 
 @celery_app.task(
-    name="arguswatch.services.ingest_pipeline.process_detection",
+    name="ati.services.ingest_pipeline.process_detection",
     bind=True, max_retries=2, default_retry_delay=10
 )
 def process_detection(self, detection_id: int):
@@ -51,14 +51,14 @@ def fire_pipeline(detection_id: int):
         logger.warning(f"[pipeline] Could not queue detection {detection_id}: {e}")
 
 
-@celery_app.task(name="arguswatch.services.ingest_pipeline.process_new_detections_batch")
+@celery_app.task(name="ati.services.ingest_pipeline.process_new_detections_batch")
 def process_new_detections_batch():
     """Batch pipeline: runs every 5 minutes via Celery beat for any missed detections."""
     import asyncio
     return asyncio.run(_async_batch_pipeline())
 
 
-@celery_app.task(name="arguswatch.services.ingest_pipeline.recheck_open_findings")
+@celery_app.task(name="ati.services.ingest_pipeline.recheck_open_findings")
 def recheck_open_findings():
     """72h recheck: re-evaluate open findings, verify remediations, close or reopen."""
     import asyncio

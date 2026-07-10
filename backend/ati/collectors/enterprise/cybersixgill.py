@@ -1,7 +1,7 @@
 """Cybersixgill - invite-only dark web forums. CYBERSIXGILL_CLIENT_ID + CYBERSIXGILL_SECRET required."""
 import logging
 from ati.config import settings
-logger = logging.getLogger("arguswatch.collectors.enterprise.cybersixgill")
+logger = logging.getLogger("ati.collectors.enterprise.cybersixgill")
 
 async def run_collection() -> dict:
     if not settings.CYBERSIXGILL_CLIENT_ID or not settings.CYBERSIXGILL_SECRET:

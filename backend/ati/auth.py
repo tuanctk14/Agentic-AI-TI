@@ -29,7 +29,7 @@ ACCESS_TOKEN_EXPIRE_HOURS = int(os.getenv("JWT_EXPIRE_HOURS", "24"))
 
 # Bootstrap admin credentials from env (first-run only)
 BOOTSTRAP_ADMIN_USER = os.getenv("ADMIN_USER", "admin")
-BOOTSTRAP_ADMIN_PASS = os.getenv("ADMIN_PASSWORD", "arguswatch-admin-changeme")
+BOOTSTRAP_ADMIN_PASS = os.getenv("ADMIN_PASSWORD", "ati-admin-changeme")
 BOOTSTRAP_API_KEY = os.getenv("API_KEY", "")  # Optional: static API key for automation
 
 # Auth is DISABLED by default. Set AUTH_DISABLED=false to enforce JWT auth.
@@ -264,4 +264,4 @@ async def delete_user(username: str) -> bool:
 # ── Dashboard auth (serves login page if not authenticated) ──
 def get_dashboard_token_from_cookie(request: Request) -> Optional[str]:
     """Extract JWT from cookie for dashboard SSR auth."""
-    return request.cookies.get("arguswatch_token")
+    return request.cookies.get("ati_token")

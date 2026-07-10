@@ -13,7 +13,7 @@ from ati.celery_app import celery_app
 from ati.collectors._pipeline_hook import trigger_pipeline_for_new, record_collector_run
 from sqlalchemy import select
 
-logger = logging.getLogger("arguswatch.collectors.darksearch")
+logger = logging.getLogger("ati.collectors.darksearch")
 
 async def search_ahmia(term: str, client: httpx.AsyncClient) -> list[dict]:
     """Ahmia.fi - clearnet Tor search index."""
@@ -117,7 +117,7 @@ async def run_collection() -> dict:
     logger.info(f"DarkSearch ingest: {stats}")
     return stats
 
-@celery_app.task(name="arguswatch.collectors.darksearch_collector.collect_darksearch")
+@celery_app.task(name="ati.collectors.darksearch_collector.collect_darksearch")
 def collect_darksearch():
     async def _wrapped():
         async with record_collector_run("darksearch") as ctx:

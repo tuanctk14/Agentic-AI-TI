@@ -6,7 +6,7 @@ import logging, asyncio
 from ati.config import settings
 from ati.celery_app import celery_app
 
-logger = logging.getLogger("arguswatch.collectors.enterprise.recordedfuture")
+logger = logging.getLogger("ati.collectors.enterprise.recordedfuture")
 
 async def run_collection() -> dict:
     key = getattr(settings, "RECORDED_FUTURE_KEY", "") or ""
@@ -18,6 +18,6 @@ async def run_collection() -> dict:
     logger.info("Recordedfuture: key present - enterprise source ready")
     return {"status": "key_present", "source": "recordedfuture", "note": "Full implementation on enterprise activation"}
 
-@celery_app.task(name="arguswatch.collectors.enterprise.recordedfuture_collector.collect_recordedfuture")
+@celery_app.task(name="ati.collectors.enterprise.recordedfuture_collector.collect_recordedfuture")
 def collect_recordedfuture():
     return asyncio.run(run_collection())

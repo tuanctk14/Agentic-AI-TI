@@ -11,7 +11,7 @@ from ati.celery_app import celery_app
 from ati.collectors._pipeline_hook import trigger_pipeline_for_new, record_collector_run
 from sqlalchemy import select
 
-logger = logging.getLogger("arguswatch.collectors.circl_misp")
+logger = logging.getLogger("ati.collectors.circl_misp")
 
 CIRCL_FEED = "https://www.circl.lu/doc/misp/feed-osint/hashes.csv"
 CIRCL_RECENT = "https://www.circl.lu/doc/misp/feed-osint/"
@@ -135,7 +135,7 @@ async def run_collection() -> dict:
     logger.info(f"CIRCL/Pulsedive ingest: {stats}")
     return stats
 
-@celery_app.task(name="arguswatch.collectors.circl_misp_collector.collect_circl_misp")
+@celery_app.task(name="ati.collectors.circl_misp_collector.collect_circl_misp")
 def collect_circl_misp():
     async def _wrapped():
         async with record_collector_run("circl_misp") as ctx:

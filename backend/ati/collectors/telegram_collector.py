@@ -14,7 +14,7 @@ from ati.celery_app import celery_app
 from ati.collectors._pipeline_hook import trigger_pipeline_for_new, record_collector_run
 from sqlalchemy import select
 
-logger = logging.getLogger("arguswatch.collectors.telegram")
+logger = logging.getLogger("ati.collectors.telegram")
 
 # Default high-value public intel channels
 DEFAULT_CHANNELS = [
@@ -40,7 +40,7 @@ async def run_collection() -> dict:
     since = datetime.utcnow() - timedelta(hours=2)
 
     try:
-        client = TelegramClient("arguswatch_session", int(api_id), api_hash)
+        client = TelegramClient("ati_session", int(api_id), api_hash)
         await client.start()
         async with async_session() as db:
             for channel in channels:
@@ -80,7 +80,7 @@ async def run_collection() -> dict:
     logger.info(f"Telegram ingest: {stats}")
     return stats
 
-@celery_app.task(name="arguswatch.collectors.telegram_collector.collect_telegram")
+@celery_app.task(name="ati.collectors.telegram_collector.collect_telegram")
 def collect_telegram():
     async def _wrapped():
         async with record_collector_run("telegram") as ctx:

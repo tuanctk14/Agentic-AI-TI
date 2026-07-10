@@ -25,7 +25,7 @@ from ati.engine.ioc_registry import (
     get_registry, invalidate_cache, calculate_dynamic_severity,
 )
 
-logger = logging.getLogger("arguswatch.admin.ioc_registry")
+logger = logging.getLogger("ati.admin.ioc_registry")
 router = APIRouter(prefix="/api/admin", tags=["admin"])
 
 

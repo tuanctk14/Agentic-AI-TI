@@ -17,7 +17,7 @@ class TestHealthEndpoints:
         assert r.status_code == 200
 
     def test_health_endpoint(self):
-        with patch("arguswatch.main.get_db") as mock:
+        with patch("ati.main.get_db") as mock:
             db = AsyncMock()
             db.execute = AsyncMock()
             mock.return_value = db
@@ -34,7 +34,7 @@ class TestAuthEndpoints:
     def test_login_valid_creds(self):
         r = client.post("/api/auth/login", json={
             "username": os.environ.get("ADMIN_USER", "admin"),
-            "password": os.environ.get("ADMIN_PASSWORD", "arguswatch-admin-changeme")
+            "password": os.environ.get("ADMIN_PASSWORD", "ati-admin-changeme")
         })
         assert r.status_code == 200
         data = r.json()
@@ -43,7 +43,7 @@ class TestAuthEndpoints:
 
     def test_me_with_token(self):
         login = client.post("/api/auth/login", json={
-            "username": "admin", "password": "arguswatch-admin-changeme"
+            "username": "admin", "password": "ati-admin-changeme"
         })
         token = login.json()["access_token"]
         r = client.get("/api/auth/me", headers={"Authorization": f"Bearer {token}"})

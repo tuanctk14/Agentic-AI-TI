@@ -6,7 +6,7 @@ import logging, asyncio
 from ati.config import settings
 from ati.celery_app import celery_app
 
-logger = logging.getLogger("arguswatch.collectors.enterprise.flare")
+logger = logging.getLogger("ati.collectors.enterprise.flare")
 
 async def run_collection() -> dict:
     key = getattr(settings, "FLARE_API_KEY", "") or ""
@@ -18,6 +18,6 @@ async def run_collection() -> dict:
     logger.info("Flare: key present - enterprise source ready")
     return {"status": "key_present", "source": "flare", "note": "Full implementation on enterprise activation"}
 
-@celery_app.task(name="arguswatch.collectors.enterprise.flare_collector.collect_flare")
+@celery_app.task(name="ati.collectors.enterprise.flare_collector.collect_flare")
 def collect_flare():
     return asyncio.run(run_collection())

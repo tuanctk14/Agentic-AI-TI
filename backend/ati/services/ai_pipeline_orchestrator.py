@@ -50,7 +50,7 @@ def _sev(val):
     return val.value if hasattr(val, "value") else str(val)
 
 
-logger = logging.getLogger("arguswatch.ai_orchestrator")
+logger = logging.getLogger("ati.ai_orchestrator")
 
 
 def _orchestration_enabled() -> bool:

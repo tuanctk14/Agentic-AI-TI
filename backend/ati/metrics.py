@@ -3,20 +3,20 @@ ATI AI v16.4.7 - Prometheus Metrics
 Exposes /metrics endpoint for Prometheus scraping.
 
 Metrics exported:
- - arguswatch_http_requests_total (counter) - by method, path, status
- - arguswatch_http_request_duration_seconds (histogram) - by method, path
- - arguswatch_detections_total (gauge) - total detections in DB
- - arguswatch_findings_open (gauge) - open findings count
- - arguswatch_customers_total (gauge) - active customers
- - arguswatch_collectors_last_run (gauge) - per-collector last run timestamp
- - arguswatch_threat_pressure_index (gauge) - current threat pressure score
+ - ati_http_requests_total (counter) - by method, path, status
+ - ati_http_request_duration_seconds (histogram) - by method, path
+ - ati_detections_total (gauge) - total detections in DB
+ - ati_findings_open (gauge) - open findings count
+ - ati_customers_total (gauge) - active customers
+ - ati_collectors_last_run (gauge) - per-collector last run timestamp
+ - ati_threat_pressure_index (gauge) - current threat pressure score
 
 Usage:
   In main.py: from ati.metrics import setup_metrics
                setup_metrics(app)
 
 Prometheus scrape config:
- - job_name: 'arguswatch'
+ - job_name: 'ati'
     static_configs:
      - targets: ['backend:8000']
     metrics_path: '/metrics'
@@ -27,7 +27,7 @@ from typing import Callable
 from fastapi import FastAPI, Request, Response
 from starlette.middleware.base import BaseHTTPMiddleware
 
-logger = logging.getLogger("arguswatch.metrics")
+logger = logging.getLogger("ati.metrics")
 
 # ── In-memory metric stores (no prometheus_client dependency needed) ──
 _counters: dict[str, int] = {}
@@ -121,8 +121,8 @@ class MetricsMiddleware(BaseHTTPMiddleware):
             "status": str(response.status_code),
         }
 
-        inc_counter("arguswatch_http_requests_total", labels)
-        observe_histogram("arguswatch_http_request_duration_seconds",
+        inc_counter("ati_http_requests_total", labels)
+        observe_histogram("ati_http_request_duration_seconds",
                           duration, {"method": request.method, "path": path})
 
         return response
@@ -136,19 +136,19 @@ async def _update_db_gauges():
 
         async with async_session() as db:
             r = await db.execute(text("SELECT COUNT(*) FROM detections"))
-            set_gauge("arguswatch_detections_total", float(r.scalar() or 0))
+            set_gauge("ati_detections_total", float(r.scalar() or 0))
 
             r = await db.execute(text(
                 "SELECT COUNT(*) FROM findings WHERE status = 'open'"))
-            set_gauge("arguswatch_findings_open", float(r.scalar() or 0))
+            set_gauge("ati_findings_open", float(r.scalar() or 0))
 
             r = await db.execute(text("SELECT COUNT(*) FROM customers"))
-            set_gauge("arguswatch_customers_total", float(r.scalar() or 0))
+            set_gauge("ati_customers_total", float(r.scalar() or 0))
 
             r = await db.execute(text(
                 "SELECT source, MAX(started_at) FROM collector_runs GROUP BY source"))
             for row in r.fetchall():
-                set_gauge("arguswatch_collectors_last_run",
+                set_gauge("ati_collectors_last_run",
                           row[1].timestamp() if row[1] else 0,
                           {"source": row[0]})
     except Exception as e:

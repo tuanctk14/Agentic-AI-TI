@@ -6,7 +6,7 @@ from ati.models import Detection, SeverityLevel, DetectionStatus
 from ati.celery_app import celery_app
 from ati.collectors._pipeline_hook import trigger_pipeline_for_new, record_collector_run
 
-logger = logging.getLogger("arguswatch.collectors.openphish")
+logger = logging.getLogger("ati.collectors.openphish")
 OPENPHISH_URL = "https://openphish.com/feed.txt"
 
 async def run_collection() -> dict:
@@ -34,7 +34,7 @@ async def run_collection() -> dict:
         await db.commit()
     return stats
 
-@celery_app.task(name="arguswatch.collectors.openphish_collector.collect_openphish")
+@celery_app.task(name="ati.collectors.openphish_collector.collect_openphish")
 def collect_openphish():
     import asyncio
     async def _wrapped():

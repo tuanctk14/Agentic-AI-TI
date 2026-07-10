@@ -10,7 +10,7 @@ from ati.celery_app import celery_app
 from ati.collectors._pipeline_hook import trigger_pipeline_for_new, record_collector_run
 from sqlalchemy import select
 
-logger = logging.getLogger("arguswatch.collectors.phishtank_urlhaus")
+logger = logging.getLogger("ati.collectors.phishtank_urlhaus")
 
 PHISHTANK_CSV = "http://data.phishtank.com/data/online-valid.csv.bz2"
 URLHAUS_CSV = "https://urlhaus.abuse.ch/downloads/csv_recent/"
@@ -139,7 +139,7 @@ async def run_collection() -> dict:
     logger.info(f"PhishTank/URLhaus ingest: {stats}")
     return stats
 
-@celery_app.task(name="arguswatch.collectors.phishtank_urlhaus_collector.collect_phishtank_urlhaus")
+@celery_app.task(name="ati.collectors.phishtank_urlhaus_collector.collect_phishtank_urlhaus")
 def collect_phishtank_urlhaus():
     async def _wrapped():
         async with record_collector_run("phishtank") as ctx:

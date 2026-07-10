@@ -6,7 +6,7 @@ import logging, asyncio
 from ati.config import settings
 from ati.celery_app import celery_app
 
-logger = logging.getLogger("arguswatch.collectors.enterprise.cybersixgill")
+logger = logging.getLogger("ati.collectors.enterprise.cybersixgill")
 
 async def run_collection() -> dict:
     key = getattr(settings, "CYBERSIXGILL_CLIENT_ID", "") or ""
@@ -18,6 +18,6 @@ async def run_collection() -> dict:
     logger.info("Cybersixgill: key present - enterprise source ready")
     return {"status": "key_present", "source": "cybersixgill", "note": "Full implementation on enterprise activation"}
 
-@celery_app.task(name="arguswatch.collectors.enterprise.cybersixgill_collector.collect_cybersixgill")
+@celery_app.task(name="ati.collectors.enterprise.cybersixgill_collector.collect_cybersixgill")
 def collect_cybersixgill():
     return asyncio.run(run_collection())

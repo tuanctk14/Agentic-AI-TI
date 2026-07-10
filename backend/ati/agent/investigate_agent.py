@@ -43,7 +43,7 @@ from datetime import datetime
 from sqlalchemy import select, func
 from sqlalchemy.ext.asyncio import AsyncSession
 
-logger = logging.getLogger("arguswatch.agent.investigate")
+logger = logging.getLogger("ati.agent.investigate")
 
 
 # ══════════════════════════════════════════════════════════════════════

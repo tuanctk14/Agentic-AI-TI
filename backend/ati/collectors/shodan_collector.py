@@ -7,7 +7,7 @@ from ati.config import settings
 from ati.celery_app import celery_app
 from ati.collectors._pipeline_hook import trigger_pipeline_for_new, record_collector_run
 
-logger = logging.getLogger("arguswatch.collectors.shodan")
+logger = logging.getLogger("ati.collectors.shodan")
 
 async def shodan_search(query: str, limit: int = 50) -> list[dict]:
     if not settings.SHODAN_API_KEY:
@@ -64,7 +64,7 @@ async def run_collection() -> dict:
             await db.commit()
     return stats
 
-@celery_app.task(name="arguswatch.collectors.shodan_collector.collect_shodan")
+@celery_app.task(name="ati.collectors.shodan_collector.collect_shodan")
 def collect_shodan():
     import asyncio
     async def _wrapped():

@@ -14,7 +14,7 @@ from ati.models import ThreatActor, ActorIoc
 from ati.celery_app import celery_app
 from ati.collectors._pipeline_hook import record_collector_run
 
-logger = logging.getLogger("arguswatch.collectors.mitre")
+logger = logging.getLogger("ati.collectors.mitre")
 
 # ── Description parsers for enriching actor metadata ──
 _COUNTRY_MAP = {
@@ -331,7 +331,7 @@ async def run_collection() -> dict:
     return stats
 
 
-@celery_app.task(name="arguswatch.collectors.mitre_collector.collect_mitre")
+@celery_app.task(name="ati.collectors.mitre_collector.collect_mitre")
 def collect_mitre():
     import asyncio
     async def _wrapped():

@@ -20,7 +20,7 @@ from ati.models import (
     ThreatActor, SeverityLevel, DetectionStatus, ExposureHistory,
 )
 
-logger = logging.getLogger("arguswatch.api.ai")
+logger = logging.getLogger("ati.api.ai")
 
 router = APIRouter(tags=["ai"])
 
@@ -569,7 +569,7 @@ INSTRUCTIONS:
         except httpx.TimeoutException:
             return {"answer": "Ollama is processing your query (qwen3:8b can take 15-60s for complex questions). Please try again -  the model is warmed up now.", "model": "slow", "provider": "ollama"}
         except Exception as e:
-            return {"answer": f"Ollama connection error: {str(e)[:150]}. Check: docker logs arguswatch-ollama", "model": "offline", "provider": "ollama"}
+            return {"answer": f"Ollama connection error: {str(e)[:150]}. Check: docker logs ati-ollama", "model": "offline", "provider": "ollama"}
 
     elif provider == "anthropic" and settings.ANTHROPIC_API_KEY:
         try:

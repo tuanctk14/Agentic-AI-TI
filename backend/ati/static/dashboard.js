@@ -3147,7 +3147,7 @@ function renderCompromiseResults(data,q){
       const fsev=f.severity||'MEDIUM';
       const sevCol={CRITICAL:'#c62828',HIGH:'#e65100',MEDIUM:'#e65c00',LOW:'#2e7d32'}[fsev]||'#666';
       const sevBg={CRITICAL:'rgba(198,40,40,.05)',HIGH:'rgba(230,81,0,.05)',MEDIUM:'rgba(230,92,0,.05)',LOW:'rgba(46,125,50,.05)'}[fsev]||'transparent';
-      const srcIcon={'arguswatch_db':'🗄️','arguswatch_findings':'📋','hudsonrock':'🪨','hibp':'🔓','sourcegraph':'🔍','virustotal':'🦠','darkweb_mention':'🌑'}[f.source]||'📌';
+      const srcIcon={'ati_db':'🗄️','ati_findings':'📋','hudsonrock':'🪨','hibp':'🔓','sourcegraph':'🔍','virustotal':'🦠','darkweb_mention':'🌑'}[f.source]||'📌';
       const matchLabel={'exact':'Exact Match','partial':'Partial Match','stealer_log':'Stealer Log','breach':'Data Breach','code_leak':'Code Leak','malware_scan':'Malware Scan','finding':'Intel Finding','darkweb':'Dark Web'}[f.match_type]||f.match_type;
       html+=`<div style="padding:10px 12px;border-radius:8px;background:${sevBg};margin-bottom:6px;border-left:3px solid ${sevCol};">
         <div style="display:flex;justify-content:space-between;align-items:center;">
@@ -3294,7 +3294,7 @@ async function sendBarAI(){
         }
       }
     }catch(e){
-      resp.innerHTML=`<div style="padding:12px;border-radius:10px;background:rgba(198,40,40,.04);border-left:3px solid #c62828;"><b>❌ Search Failed</b><br>${e.message||'Network error'}<br><span style="font-size:12px;color:var(--text4);">Check intel-proxy: <code>docker logs arguswatch-intel-proxy</code></span></div>`;
+      resp.innerHTML=`<div style="padding:12px;border-radius:10px;background:rgba(198,40,40,.04);border-left:3px solid #c62828;"><b>❌ Search Failed</b><br>${e.message||'Network error'}<br><span style="font-size:12px;color:var(--text4);">Check intel-proxy: <code>docker logs ati-intel-proxy</code></span></div>`;
     }
     return;
   }

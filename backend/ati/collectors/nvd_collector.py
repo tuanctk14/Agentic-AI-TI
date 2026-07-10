@@ -12,7 +12,7 @@ from ati.models import Detection, SeverityLevel, DetectionStatus, CveProductMap
 from ati.celery_app import celery_app
 from ati.collectors._pipeline_hook import trigger_pipeline_for_new, record_collector_run
 
-logger = logging.getLogger("arguswatch.collectors.nvd")
+logger = logging.getLogger("ati.collectors.nvd")
 NVD_URL = "https://services.nvd.nist.gov/rest/json/cves/2.0"
 
 CVSS_TO_SEV = {
@@ -281,7 +281,7 @@ def _extract_product_names_from_desc(desc: str) -> list[str]:
     return products[:5]
 
 
-@celery_app.task(name="arguswatch.collectors.nvd_collector.collect_nvd")
+@celery_app.task(name="ati.collectors.nvd_collector.collect_nvd")
 def collect_nvd():
     import asyncio
     async def _wrapped():

@@ -11,12 +11,12 @@ alerting:
        - targets: []  # Add alertmanager:9093 when ready
 
 scrape_configs:
- - job_name: "arguswatch-backend"
+ - job_name: "ati-backend"
     static_configs:
      - targets: ["backend:8000"]
     metrics_path: "/metrics"
 
- - job_name: "arguswatch-nginx"
+ - job_name: "ati-nginx"
     static_configs:
      - targets: ["nginx:9113"]  # nginx-prometheus-exporter if added
     metrics_path: "/metrics"

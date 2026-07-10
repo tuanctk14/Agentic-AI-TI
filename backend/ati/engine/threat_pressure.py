@@ -43,7 +43,7 @@ from ati.models import (
     Detection, DarkWebMention, GlobalThreatActivity,
 )
 
-logger = logging.getLogger("arguswatch.engine.threat_pressure")
+logger = logging.getLogger("ati.engine.threat_pressure")
 
 # ═══════════════════════════════════════════════════════════════════════
 # SOURCE -> CATEGORY CLASSIFICATION

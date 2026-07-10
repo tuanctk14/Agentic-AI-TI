@@ -13,7 +13,7 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from typing import Optional
 
-logger = logging.getLogger("arguswatch.discovery.providers")
+logger = logging.getLogger("ati.discovery.providers")
 
 
 # ═══════════════════════════════════════════════════════════════════════

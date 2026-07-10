@@ -24,7 +24,7 @@ def _sev(val):
     return val.value if hasattr(val, "value") else str(val)
 
 
-logger = logging.getLogger("arguswatch.tasks")
+logger = logging.getLogger("ati.tasks")
 
 
 def _run_async(coro):
@@ -40,7 +40,7 @@ def _run_async(coro):
 # TASK 1: Intel Collection via Intel Proxy
 # ═══════════════════════════════════════════════════════════════════════
 
-@celery_app.task(name="arguswatch.tasks.collect_via_intel_proxy", bind=True, max_retries=2)
+@celery_app.task(name="ati.tasks.collect_via_intel_proxy", bind=True, max_retries=2)
 def collect_via_intel_proxy(self, endpoint="all"):
     """Call intel-proxy HTTP API to trigger real threat intel collection.
     
@@ -80,7 +80,7 @@ def collect_via_intel_proxy(self, endpoint="all"):
 # TASK 2: Customer Intel Matching
 # ═══════════════════════════════════════════════════════════════════════
 
-@celery_app.task(name="arguswatch.tasks.match_all_customers_task")
+@celery_app.task(name="ati.tasks.match_all_customers_task")
 def match_all_customers_task():
     """Run the 5-strategy customer intel matcher against ALL customers.
     
@@ -137,7 +137,7 @@ def match_all_customers_task():
 # TASK 3: Correlation Engine
 # ═══════════════════════════════════════════════════════════════════════
 
-@celery_app.task(name="arguswatch.tasks.correlate_detections_task")
+@celery_app.task(name="ati.tasks.correlate_detections_task")
 def correlate_detections_task():
     """Route unmatched detections to customers using correlation engine."""
     from ati.database import async_session
@@ -157,7 +157,7 @@ def correlate_detections_task():
 # TASK 4: SLA Check + Alert Dispatch (Fix #3)
 # ═══════════════════════════════════════════════════════════════════════
 
-@celery_app.task(name="arguswatch.tasks.check_sla_and_alert_task")
+@celery_app.task(name="ati.tasks.check_sla_and_alert_task")
 def check_sla_and_alert_task():
     """Scan for:
     1. New CRITICAL/HIGH findings that haven't been alerted yet
@@ -278,7 +278,7 @@ def check_sla_and_alert_task():
 # TASK 5: Exposure Scoring with CVSS/EPSS (Fix #4)
 # ═══════════════════════════════════════════════════════════════════════
 
-@celery_app.task(name="arguswatch.tasks.threat_pressure_task")
+@celery_app.task(name="ati.tasks.threat_pressure_task")
 def threat_pressure_task():
     """Calculate global threat pressure from unmatched IOCs.
     
@@ -298,7 +298,7 @@ def threat_pressure_task():
     return _run_async(_calc())
 
 
-@celery_app.task(name="arguswatch.tasks.exposure_recalc_task")
+@celery_app.task(name="ati.tasks.exposure_recalc_task")
 def exposure_recalc_task():
     """Recalculate exposure scores using real CVSS/EPSS data from NVD.
     
@@ -325,7 +325,7 @@ def exposure_recalc_task():
     
     return _run_async(_recalc())
 
-@celery_app.task(name="arguswatch.tasks.snapshot_exposure_history")
+@celery_app.task(name="ati.tasks.snapshot_exposure_history")
 def snapshot_exposure_history():
     """Daily snapshot of exposure scores for trend charts.
     Stores overall + D1-D5 scores per customer in exposure_history table."""
@@ -397,7 +397,7 @@ def snapshot_exposure_history():
     return _run_async(_snapshot())
 
 
-@celery_app.task(name="arguswatch.tasks.retry_recon", bind=True, max_retries=3)
+@celery_app.task(name="ati.tasks.retry_recon", bind=True, max_retries=3)
 def retry_recon(self, customer_id, domain):
     """Retry recon for customers where initial recon failed at onboarding.
     Retries 3 times with exponential backoff (2min, 4min, 8min)."""
@@ -466,7 +466,7 @@ def retry_recon(self, customer_id, domain):
 # V16.4: AGENTIC AI TASKS
 # ══════════════════════════════════════════════════════════════════════
 
-@celery_app.task(name="arguswatch.tasks.darkweb_triage_task")
+@celery_app.task(name="ati.tasks.darkweb_triage_task")
 def darkweb_triage_task():
     """Triage all untriaged dark web mentions with customer_id.
     Runs every 30 min via Celery beat.
@@ -485,7 +485,7 @@ def darkweb_triage_task():
     return _run_async(_triage())
 
 
-@celery_app.task(name="arguswatch.tasks.sector_campaign_detection_task")
+@celery_app.task(name="ati.tasks.sector_campaign_detection_task")
 def sector_campaign_detection_task():
     """Detect cross-customer IOC patterns - MSSP differentiator.
     Runs every 6 hours via Celery beat.
@@ -508,7 +508,7 @@ def sector_campaign_detection_task():
 # DATA RETENTION / CLEANUP -  Prevent unbounded DB growth
 # ══════════════════════════════════════════════════════════════════
 
-@celery_app.task(name="arguswatch.tasks.data_cleanup")
+@celery_app.task(name="ati.tasks.data_cleanup")
 def data_cleanup_task():
     """Nightly data cleanup to prevent unbounded PostgreSQL growth.
 
@@ -580,7 +580,7 @@ def data_cleanup_task():
     return _run_async(_cleanup())
 
 
-@celery_app.task(name="arguswatch.tasks.mitre_sync_task", bind=True, max_retries=1)
+@celery_app.task(name="ati.tasks.mitre_sync_task", bind=True, max_retries=1)
 def mitre_sync_task(self):
     """Weekly MITRE ATT&CK sync -  pulls latest techniques, flags deprecated mappings."""
     import asyncio

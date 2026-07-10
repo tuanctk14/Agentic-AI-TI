@@ -57,7 +57,7 @@ from ati.models import (
     CveProductMap, Finding, ProbableExposure,
 )
 
-logger = logging.getLogger("arguswatch.customer_intel_matcher")
+logger = logging.getLogger("ati.customer_intel_matcher")
 
 
 # ═══════════════════════════════════════════════════════════════════════

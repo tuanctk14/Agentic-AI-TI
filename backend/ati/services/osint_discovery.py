@@ -16,7 +16,7 @@ from typing import Optional
 
 import httpx
 
-logger = logging.getLogger("arguswatch.discovery.osint")
+logger = logging.getLogger("ati.discovery.osint")
 
 TIMEOUT = httpx.Timeout(15.0, connect=8.0)
 HEADERS = {"User-Agent": "ATI-Discovery/1.0"}

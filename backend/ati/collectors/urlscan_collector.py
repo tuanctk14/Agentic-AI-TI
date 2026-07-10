@@ -8,7 +8,7 @@ from ati.config import settings
 from ati.celery_app import celery_app
 from ati.collectors._pipeline_hook import trigger_pipeline_for_new, record_collector_run
 
-logger = logging.getLogger("arguswatch.collectors.urlscan")
+logger = logging.getLogger("ati.collectors.urlscan")
 URLSCAN_SEARCH = "https://urlscan.io/api/v1/search/"
 
 async def run_collection() -> dict:
@@ -50,7 +50,7 @@ async def run_collection() -> dict:
         await db.commit()
     return stats
 
-@celery_app.task(name="arguswatch.collectors.urlscan_collector.collect_urlscan")
+@celery_app.task(name="ati.collectors.urlscan_collector.collect_urlscan")
 def collect_urlscan():
     import asyncio
     async def _wrapped():

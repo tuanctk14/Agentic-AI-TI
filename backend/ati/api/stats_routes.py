@@ -21,7 +21,7 @@ from ati.models import (
     AssetType, CveProductMap,
 )
 
-logger = logging.getLogger("arguswatch.api.stats")
+logger = logging.getLogger("ati.api.stats")
 
 router = APIRouter(tags=["stats"])
 

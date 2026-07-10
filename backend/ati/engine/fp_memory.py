@@ -25,7 +25,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from ati.models import FPPattern
 
-logger = logging.getLogger("arguswatch.fp_memory")
+logger = logging.getLogger("ati.fp_memory")
 
 
 async def record_fp_pattern(

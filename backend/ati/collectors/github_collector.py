@@ -7,7 +7,7 @@ from ati.config import settings
 from ati.celery_app import celery_app
 from ati.collectors._pipeline_hook import trigger_pipeline_for_new, record_collector_run
 
-logger = logging.getLogger("arguswatch.collectors.github")
+logger = logging.getLogger("ati.collectors.github")
 GH_SEARCH = "https://api.github.com/search/code"
 
 SECRET_QUERIES = [
@@ -53,7 +53,7 @@ async def run_collection() -> dict:
         await db.commit()
     return stats
 
-@celery_app.task(name="arguswatch.collectors.github_collector.collect_github")
+@celery_app.task(name="ati.collectors.github_collector.collect_github")
 def collect_github():
     import asyncio
     async def _wrapped():

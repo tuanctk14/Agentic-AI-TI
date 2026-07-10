@@ -28,7 +28,7 @@ from ati.database import async_session
 from ati.models import Detection, Enrichment, SeverityLevel
 from sqlalchemy import select
 
-logger = logging.getLogger("arguswatch.enrichment")
+logger = logging.getLogger("ati.enrichment")
 
 
 # ══════════════════════════════════════════════════════════════════════

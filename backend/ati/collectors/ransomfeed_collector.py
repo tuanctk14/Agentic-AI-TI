@@ -7,7 +7,7 @@ from ati.models import DarkWebMention, SeverityLevel
 from ati.celery_app import celery_app
 from ati.collectors._pipeline_hook import trigger_pipeline_for_new, record_collector_run
 
-logger = logging.getLogger("arguswatch.collectors.ransomfeed")
+logger = logging.getLogger("ati.collectors.ransomfeed")
 
 RANSOMFEED_URL = "https://ransomfeed.it/api/v2/posts/?limit=100&ordering=-published"
 
@@ -50,7 +50,7 @@ async def run_collection() -> dict:
     logger.info(f"RansomFeed ingest: {stats}")
     return stats
 
-@celery_app.task(name="arguswatch.collectors.ransomfeed_collector.collect_ransomfeed")
+@celery_app.task(name="ati.collectors.ransomfeed_collector.collect_ransomfeed")
 def collect_ransomfeed():
     import asyncio
     async def _wrapped():

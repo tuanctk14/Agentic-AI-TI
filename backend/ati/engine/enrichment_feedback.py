@@ -27,7 +27,7 @@ def _sev(val):
     return val.value if hasattr(val, "value") else str(val)
 
 
-logger = logging.getLogger("arguswatch.engine.enrichment_feedback")
+logger = logging.getLogger("ati.engine.enrichment_feedback")
 
 SEV_RANK = {"INFO": 0, "LOW": 1, "MEDIUM": 2, "HIGH": 3, "CRITICAL": 4}
 

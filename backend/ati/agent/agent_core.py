@@ -22,7 +22,7 @@ import httpx
 from ati.config import settings
 from ati.agent.tools import TOOL_REGISTRY, TOOL_SCHEMAS
 
-logger = logging.getLogger("arguswatch.agent")
+logger = logging.getLogger("ati.agent")
 
 SYSTEM_PROMPT = """You are ATI AI - an expert cybersecurity threat intelligence analyst embedded inside a live threat detection platform.
 

@@ -21,7 +21,7 @@ from ati.engine.exposure_scorer import (
     _dim3_actor_intent, _dim4_attack_surface, _dim5_asset_criticality,
 )
 
-logger = logging.getLogger("arguswatch.exposure_scorer")
+logger = logging.getLogger("ati.exposure_scorer")
 
 
 async def score_customer_actor(customer: Customer, actor: ThreatActor, db) -> tuple[float, dict]:

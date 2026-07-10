@@ -16,9 +16,9 @@ try:
     conn = psycopg2.connect(
         host=os.environ.get('POSTGRES_HOST','postgres'),
         port=os.environ.get('POSTGRES_PORT','5432'),
-        user=os.environ.get('POSTGRES_USER','arguswatch'),
-        password=os.environ.get('POSTGRES_PASSWORD','arguswatch_dev_2026'),
-        dbname=os.environ.get('POSTGRES_DB','arguswatch'),
+        user=os.environ.get('POSTGRES_USER','ati'),
+        password=os.environ.get('POSTGRES_PASSWORD','ati_dev_2026'),
+        dbname=os.environ.get('POSTGRES_DB','ati'),
         connect_timeout=5
     )
     conn.close()
@@ -64,9 +64,9 @@ import psycopg2, os
 conn = psycopg2.connect(
     host=os.environ.get('POSTGRES_HOST','postgres'),
     port=os.environ.get('POSTGRES_PORT','5432'),
-    user=os.environ.get('POSTGRES_USER','arguswatch'),
-    password=os.environ.get('POSTGRES_PASSWORD','arguswatch_dev_2026'),
-    dbname=os.environ.get('POSTGRES_DB','arguswatch'),
+    user=os.environ.get('POSTGRES_USER','ati'),
+    password=os.environ.get('POSTGRES_PASSWORD','ati_dev_2026'),
+    dbname=os.environ.get('POSTGRES_DB','ati'),
     connect_timeout=5
 )
 cur = conn.cursor()
@@ -102,8 +102,8 @@ fi
 # If Python seeds failed silently, force-create via raw SQL.
 # This ALWAYS works regardless of ORM bugs.
 echo "  Running SQL safety net..."
-PGCMD="psql -h ${POSTGRES_HOST:-postgres} -U ${POSTGRES_USER:-arguswatch} -d ${POSTGRES_DB:-arguswatch}"
-export PGPASSWORD="${POSTGRES_PASSWORD:-arguswatch_dev_2026}"
+PGCMD="psql -h ${POSTGRES_HOST:-postgres} -U ${POSTGRES_USER:-ati} -d ${POSTGRES_DB:-ati}"
+export PGPASSWORD="${POSTGRES_PASSWORD:-ati_dev_2026}"
 
 # Customers – EVN group
 $PGCMD -c "INSERT INTO customers (name, industry, tier, email, onboarding_state, active) VALUES

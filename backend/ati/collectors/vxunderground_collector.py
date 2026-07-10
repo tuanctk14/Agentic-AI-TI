@@ -10,7 +10,7 @@ from ati.collectors._pipeline_hook import trigger_pipeline_for_new, record_colle
 from ati.engine.pattern_matcher import scan_text
 from sqlalchemy import select
 
-logger = logging.getLogger("arguswatch.collectors.vxunderground")
+logger = logging.getLogger("ati.collectors.vxunderground")
 
 VXU_BASE = "https://vx-underground.org"
 FEEDS = [
@@ -59,7 +59,7 @@ async def run_collection() -> dict:
     logger.info(f"VX-Underground ingest: {stats}")
     return stats
 
-@celery_app.task(name="arguswatch.collectors.vxunderground_collector.collect_vxunderground")
+@celery_app.task(name="ati.collectors.vxunderground_collector.collect_vxunderground")
 def collect_vxunderground():
     async def _wrapped():
         async with record_collector_run("vxunderground") as ctx:

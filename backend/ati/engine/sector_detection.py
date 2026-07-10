@@ -24,7 +24,7 @@ from ati.models import (
 )
 from ati.services.ai_pipeline_hooks import _llm_json, _pipeline_ai_available
 
-logger = logging.getLogger("arguswatch.agent.sector_detection")
+logger = logging.getLogger("ati.agent.sector_detection")
 
 
 async def detect_sector_campaigns(db: AsyncSession, hours: int = 48) -> dict:

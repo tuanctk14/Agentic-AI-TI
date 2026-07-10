@@ -14,7 +14,7 @@ from datetime import datetime, timezone, timedelta
 from typing import Optional
 import math
 
-logger = logging.getLogger("arguswatch.utils")
+logger = logging.getLogger("ati.utils")
 
 
 # ═══════════════════════════════════════════════════════════════════

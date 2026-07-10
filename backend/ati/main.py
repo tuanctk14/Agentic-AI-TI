@@ -36,7 +36,7 @@ from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
 from ati.metrics import setup_metrics
 
-logger = logging.getLogger("arguswatch.main")
+logger = logging.getLogger("ati.main")
 
 STATIC = Path(__file__).parent / "static"
 

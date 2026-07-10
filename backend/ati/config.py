@@ -3,11 +3,11 @@ from functools import lru_cache
 
 class Settings(BaseSettings):
     # Database
-    POSTGRES_USER: str = "arguswatch"
-    POSTGRES_PASSWORD: str = "arguswatch"  # Default for local/dev/tests; override in .env for real deployments
+    POSTGRES_USER: str = "ati"
+    POSTGRES_PASSWORD: str = "ati"  # Default for local/dev/tests; override in .env for real deployments
     POSTGRES_HOST: str = "localhost"
     POSTGRES_PORT: int = 5432
-    POSTGRES_DB: str = "arguswatch"
+    POSTGRES_DB: str = "ati"
     # Redis / Celery
     REDIS_URL: str = "redis://redis:6379/0"
     CELERY_BROKER_URL: str = "redis://redis:6379/0"
