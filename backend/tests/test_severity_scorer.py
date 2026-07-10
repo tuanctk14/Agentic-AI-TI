@@ -1,6 +1,6 @@
 """Tests for severity_scorer.py - SLA tiers and auto-override."""
 import pytest
-from arguswatch.engine.severity_scorer import score, ScoredResult, IOC_SLA_MAP
+from ati.engine.severity_scorer import score, ScoredResult, IOC_SLA_MAP
 
 
 class TestIOCSLAMap:

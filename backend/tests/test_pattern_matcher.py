@@ -1,6 +1,6 @@
 """Tests for pattern_matcher.py - IOC regex extraction across 15 categories."""
 import pytest
-from arguswatch.engine.pattern_matcher import scan_text, IOCMatch
+from ati.engine.pattern_matcher import scan_text, IOCMatch
 
 
 class TestScanText:

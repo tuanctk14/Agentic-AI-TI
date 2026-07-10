@@ -8,7 +8,7 @@ groups:
         labels:
           severity: critical
         annotations:
-          summary: "ArgusWatch backend is down"
+          summary: "ATI backend is down"
           description: "Backend has been unreachable for more than 2 minutes."
 
       # High error rate

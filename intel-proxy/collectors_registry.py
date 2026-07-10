@@ -1,5 +1,5 @@
 """
-ArgusWatch Intel Proxy -  All Collector Functions (extracted from proxy_server.py)
+ATI Intel Proxy -  All Collector Functions (extracted from proxy_server.py)
 49 collectors: free-tier + enterprise stubs + customer-scoped.
 Import shared helpers from the main proxy module.
 """
@@ -234,8 +234,8 @@ async def collect_paste():
     import sys, os
     sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'backend'))
     try:
-        from arguswatch.engine.pattern_matcher import scan_text as pm_scan
-        from arguswatch.engine.severity_scorer import score as sev_score
+        from ati.engine.pattern_matcher import scan_text as pm_scan
+        from ati.engine.severity_scorer import score as sev_score
     except ImportError:
         # Fallback: pattern_matcher not available in intel-proxy container
         pm_scan = None
@@ -848,7 +848,7 @@ async def collect_pulsedive():
                         try:
                             resp = await c.get("https://pulsedive.com/api/explore.php",
                                 params={"q": f'threat="{term}"', "limit": 10, "pretty": 1},
-                                timeout=15.0, headers={"User-Agent": "ArgusWatch/16.4"})
+                                timeout=15.0, headers={"User-Agent": "ATI/16.4"})
                             if resp.status_code != 200: continue
                             data = resp.json()
                             for result in (data.get("results", []) or [])[:10]:
@@ -886,7 +886,7 @@ async def collect_pulsedive():
                     try:
                         resp = await c.get("https://pulsedive.com/api/explore.php",
                             params=params, timeout=15.0,
-                            headers={"User-Agent": "ArgusWatch/16.0"})
+                            headers={"User-Agent": "ATI/16.0"})
                         if resp.status_code == 429:
                             log.warning(f"Pulsedive rate limited after {stats['customers_queried']} queries. Stopping.")
                             break
@@ -955,7 +955,7 @@ async def collect_vxunderground():
             # Source 1: Malpedia malware families (comprehensive free database)
             try:
                 resp = await c.get("https://malpedia.caad.fkie.fraunhofer.de/api/list/families",
-                    headers={"User-Agent": "ArgusWatch/16.4"}, timeout=20.0)
+                    headers={"User-Agent": "ATI/16.4"}, timeout=20.0)
                 if resp.status_code == 200:
                     families = resp.json()
                     stats["total"] += len(families) if isinstance(families, (list, dict)) else 0
@@ -981,7 +981,7 @@ async def collect_vxunderground():
             # Source 2: Malpedia threat actors
             try:
                 resp = await c.get("https://malpedia.caad.fkie.fraunhofer.de/api/list/actors",
-                    headers={"User-Agent": "ArgusWatch/16.4"}, timeout=20.0)
+                    headers={"User-Agent": "ATI/16.4"}, timeout=20.0)
                 if resp.status_code == 200:
                     actors = resp.json()
                     async with AsyncSessionLocal() as db:
@@ -1033,7 +1033,7 @@ async def collect_ransomwatch():
     try:
         async with httpx.AsyncClient(timeout=HTTP_TIMEOUT, follow_redirects=True) as c:
             resp = await c.get("https://ransomwhat.telemetry.ltd/posts",
-                headers={"User-Agent": "ArgusWatch/16.0"}, timeout=25.0)
+                headers={"User-Agent": "ATI/16.0"}, timeout=25.0)
             if resp.status_code != 200:
                 log.warning(f"Ransomwatch returned {resp.status_code}")
                 return {"error": f"HTTP {resp.status_code}", "new": 0}
@@ -1153,8 +1153,8 @@ async def collect_grep_app():
     import sys, os
     sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'backend'))
     try:
-        from arguswatch.engine.pattern_matcher import scan_text as pm_scan
-        from arguswatch.engine.severity_scorer import score as sev_score
+        from ati.engine.pattern_matcher import scan_text as pm_scan
+        from ati.engine.severity_scorer import score as sev_score
     except ImportError:
         pm_scan = None
         sev_score = None
@@ -1214,7 +1214,7 @@ async def collect_grep_app():
                         try:
                             resp = await c.get("https://grep.app/api/search",
                                 params={"q": query, "page": "1"},
-                                headers={"User-Agent": "ArgusWatch/16.0"})
+                                headers={"User-Agent": "ATI/16.0"})
                             if resp.status_code != 200: continue
                             data = resp.json()
                             hits = data.get("hits", {}).get("hits", [])
@@ -1331,7 +1331,7 @@ async def collect_grep_app():
                     try:
                         resp = await c.get("https://grep.app/api/search",
                             params={"q": query, "page": "1"},
-                            headers={"User-Agent": "ArgusWatch/16.0"})
+                            headers={"User-Agent": "ATI/16.0"})
                         if resp.status_code != 200: continue
                         data = resp.json()
                         hits = data.get("hits", {}).get("hits", [])
@@ -1476,7 +1476,7 @@ async def collect_breach():
                 except Exception:
                     email_domains = []
 
-                hibp_headers = {"hibp-api-key": HIBP_KEY, "User-Agent": "ArgusWatch-v16"}
+                hibp_headers = {"hibp-api-key": HIBP_KEY, "User-Agent": "ATI-v16"}
 
                 for domain in domains[:10]:
                     # ── Endpoint 1: /breacheddomain/{domain} ──
@@ -1713,7 +1713,7 @@ async def collect_github_gists():
     stats = {"new": 0, "gists_scanned": 0, "gists_with_iocs": 0,
              "total_gists": 0, "skipped": 0}
     github_token = os.getenv("GITHUB_TOKEN", "")
-    headers = {"Accept": "application/vnd.github.v3+json", "User-Agent": "ArgusWatch/16.4"}
+    headers = {"Accept": "application/vnd.github.v3+json", "User-Agent": "ATI/16.4"}
     if github_token:
         headers["Authorization"] = f"token {github_token}"
     try:
@@ -1822,7 +1822,7 @@ async def collect_sourcegraph():
                         # Try stream API first
                         resp = await c.get("https://sourcegraph.com/.api/search/stream",
                             params={"q": f"{query} type:file", "v": "V3", "display": "50"},
-                            headers={"Accept": "text/event-stream", "User-Agent": "ArgusWatch/16.4"},
+                            headers={"Accept": "text/event-stream", "User-Agent": "ATI/16.4"},
                             timeout=25.0)
                         if resp.status_code == 200 and len(resp.text) > 50:
                             # Parse streaming response (event: matches\ndata: {...}\n\n)
@@ -1861,7 +1861,7 @@ async def collect_sourcegraph():
                                     results{results{...on FileMatch{repository{name}file{path}
                                     lineMatches{preview}}}}}}""",
                                     "variables": {"q": f"{query} type:file"}},
-                                headers={"User-Agent": "ArgusWatch/16.4"}, timeout=25.0)
+                                headers={"User-Agent": "ATI/16.4"}, timeout=25.0)
                             if gql_resp.status_code == 200:
                                 results = (gql_resp.json().get("data", {}).get("search", {})
                                            .get("results", {}).get("results", []))
@@ -1910,7 +1910,7 @@ async def collect_alt_paste():
             stats["sites_tried"] += 1
             ss = {"name": "dpaste.org", "pastes": 0, "iocs": 0, "status": "unknown"}
             try:
-                resp = await c.get("https://dpaste.org/", headers={"User-Agent": "ArgusWatch/16.4"}, timeout=15.0)
+                resp = await c.get("https://dpaste.org/", headers={"User-Agent": "ATI/16.4"}, timeout=15.0)
                 if resp.status_code == 200:
                     paste_ids = list(dict.fromkeys(re.findall(r'href="/([A-Za-z0-9]{4,12})"', resp.text)))[:30]
                     ss["pastes"] = len(paste_ids)
@@ -1977,7 +1977,7 @@ async def collect_alt_paste():
             stats["sites_tried"] += 1
             ss = {"name": "paste.centos.org", "pastes": 0, "iocs": 0, "status": "unknown"}
             try:
-                resp = await c.get("https://paste.centos.org/", headers={"User-Agent": "ArgusWatch/16.4"}, timeout=10.0)
+                resp = await c.get("https://paste.centos.org/", headers={"User-Agent": "ATI/16.4"}, timeout=10.0)
                 if resp.status_code == 200:
                     paste_ids = list(dict.fromkeys(re.findall(r'href="/view/([a-z0-9]+)"', resp.text)))[:20]
                     ss["pastes"] = len(paste_ids)
@@ -2005,7 +2005,7 @@ async def collect_alt_paste():
             stats["sites_tried"] += 1
             ss = {"name": "paste.ubuntu.com", "pastes": 0, "iocs": 0, "status": "unknown"}
             try:
-                resp = await c.get("https://paste.ubuntu.com/", headers={"User-Agent": "ArgusWatch/16.4"}, timeout=10.0)
+                resp = await c.get("https://paste.ubuntu.com/", headers={"User-Agent": "ATI/16.4"}, timeout=10.0)
                 if resp.status_code == 200:
                     paste_ids = list(dict.fromkeys(re.findall(r'href="/p/([A-Za-z0-9]+)/"', resp.text)))[:20]
                     ss["pastes"] = len(paste_ids)
@@ -2138,7 +2138,7 @@ async def collect_leakix():
     """
     started = datetime.utcnow()
     stats = {"new": 0, "total": 0, "customers_searched": 0, "leaks": 0, "services": 0}
-    headers = {"Accept": "application/json", "User-Agent": "ArgusWatch/16.4"}
+    headers = {"Accept": "application/json", "User-Agent": "ATI/16.4"}
     if LEAKIX_KEY:
         headers["api-key"] = LEAKIX_KEY
     try:
@@ -2327,7 +2327,7 @@ async def collect_hibp_breaches():
     try:
         async with httpx.AsyncClient(timeout=20.0, follow_redirects=True) as c:
             resp = await c.get("https://haveibeenpwned.com/api/v3/breaches",
-                headers={"User-Agent": "ArgusWatch/16.4"})
+                headers={"User-Agent": "ATI/16.4"})
             if resp.status_code != 200:
                 return {"error": f"HIBP returned {resp.status_code}", "new": 0}
             breaches = resp.json()
@@ -2430,7 +2430,7 @@ async def collect_github_code_search():
         async with httpx.AsyncClient(timeout=20.0, follow_redirects=True) as c:
             headers = {"Authorization": f"token {github_token}",
                        "Accept": "application/vnd.github.v3.text-match+json",
-                       "User-Agent": "ArgusWatch/16.4"}
+                       "User-Agent": "ATI/16.4"}
             async with AsyncSessionLocal() as db:
                 for query, label in queries:
                     stats["queries"] += 1
@@ -2489,7 +2489,7 @@ async def collect_urlscan_community():
                     try:
                         resp = await c.get("https://urlscan.io/api/v1/search/",
                             params={"q": f"domain:{domain}", "size": 20},
-                            headers={"User-Agent": "ArgusWatch/16.4"}, timeout=15.0)
+                            headers={"User-Agent": "ATI/16.4"}, timeout=15.0)
                         if resp.status_code != 200: continue
                         data = resp.json()
                         for result in data.get("results", [])[:15]:
@@ -2669,7 +2669,7 @@ async def collect_crtsh():
                     try:
                         resp = await c.get(
                             f"https://crt.sh/?q=%.{domain_val}&output=json",
-                            headers={"User-Agent": "ArgusWatch/1.0"}
+                            headers={"User-Agent": "ATI/1.0"}
                         )
                         if resp.status_code != 200:
                             stats["errors"] += 1

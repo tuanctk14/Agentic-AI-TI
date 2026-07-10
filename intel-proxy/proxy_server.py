@@ -1,5 +1,5 @@
 """
-ArgusWatch Intel Proxy Gateway
+ATI Intel Proxy Gateway
 ================================
 Separate microservice with FULL internet access.
 Fetches REAL threat intel from public feeds, writes directly to PostgreSQL.
@@ -453,12 +453,12 @@ def _load_pm():
         return
     _pm_loaded_v2 = True
     try:
-        from arguswatch.engine.pattern_matcher import scan_text
+        from ati.engine.pattern_matcher import scan_text
         _pm_scan_v2 = scan_text
     except ImportError:
         log.warning("pattern_matcher not available -  raw text collectors disabled")
     try:
-        from arguswatch.engine.severity_scorer import score
+        from ati.engine.severity_scorer import score
         _sev_score_v2 = score
     except ImportError:
         pass
@@ -737,7 +737,7 @@ async def discover_assets(domain: str) -> dict:
 
 # collect_epss_top -> collectors_registry.py
 
-app = FastAPI(title="ArgusWatch Intel Proxy Gateway", lifespan=lifespan)
+app = FastAPI(title="ATI Intel Proxy Gateway", lifespan=lifespan)
 
 @app.post("/settings/key")
 async def set_runtime_key(request: Request):
@@ -943,10 +943,10 @@ async def search_compromise(query: str):
                 "severity": hit[4],
                 "found_at": hit[5].isoformat() if hit[5] else None,
             })
-        results["sources_checked"].append({"name": "ArgusWatch DB", "status": "ok",
+        results["sources_checked"].append({"name": "ATI DB", "status": "ok",
             "hits": len(exact_hits) + len(partial_hits) + len(finding_hits) + len(darkweb_hits)})
     except Exception as e:
-        results["sources_checked"].append({"name": "ArgusWatch DB", "status": f"error: {str(e)[:80]}", "hits": 0})
+        results["sources_checked"].append({"name": "ATI DB", "status": f"error: {str(e)[:80]}", "hits": 0})
 
     # Step 3: HudsonRock (email or domain)
     if results["query_type"] in ("email", "domain"):
@@ -955,7 +955,7 @@ async def search_compromise(query: str):
             async with httpx.AsyncClient(timeout=10.0, follow_redirects=True) as c:
                 resp = await c.get(
                     f"https://cavalier.hudsonrock.com/api/json/v2/osint-tools/search-by-domain?domain={search_domain}",
-                    headers={"User-Agent": "ArgusWatch/16.4"})
+                    headers={"User-Agent": "ATI/16.4"})
                 if resp.status_code == 200:
                     data = resp.json()
                     stealers = data.get("stealers", [])
@@ -984,7 +984,7 @@ async def search_compromise(query: str):
             async with httpx.AsyncClient(timeout=10.0, follow_redirects=True) as c:
                 resp = await c.get(
                     f"https://haveibeenpwned.com/api/v3/breachedaccount/{query}",
-                    headers={"hibp-api-key": HIBP_KEY, "User-Agent": "ArgusWatch/16.4"},
+                    headers={"hibp-api-key": HIBP_KEY, "User-Agent": "ATI/16.4"},
                     params={"truncateResponse": "false"})
                 if resp.status_code == 200:
                     breaches = resp.json()
@@ -1017,7 +1017,7 @@ async def search_compromise(query: str):
                         results{results{...on FileMatch{repository{name}file{path}
                         lineMatches{preview}}}}}}""",
                         "variables": {"q": sg_query}},
-                    headers={"User-Agent": "ArgusWatch/16.4"}, timeout=15.0)
+                    headers={"User-Agent": "ATI/16.4"}, timeout=15.0)
                 if resp.status_code == 200:
                     sg_results = (resp.json().get("data", {}).get("search", {})
                                   .get("results", {}).get("results", []))

@@ -1,7 +1,7 @@
 """Tests for models.py - verify all 25 ORM models."""
 import pytest
 from sqlalchemy import inspect
-from arguswatch.models import (
+from ati.models import (
     Base, Detection, Customer, CustomerAsset, ThreatActor, Finding,
     CustomerExposure, DarkWebMention, CollectorRun, Enrichment, Campaign,
     CampaignFinding, ActorIOC, RemediationAction, FPPattern, SectorAdvisory,

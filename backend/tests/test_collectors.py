@@ -49,17 +49,17 @@ class TestCollectorModules:
     """Verify individual collector .py files parse."""
 
     COLLECTOR_FILES = [
-        "backend/arguswatch/collectors/cisa_kev.py",
-        "backend/arguswatch/collectors/threatfox_collector.py",
-        "backend/arguswatch/collectors/openphish_collector.py",
-        "backend/arguswatch/collectors/ransomfeed_collector.py",
-        "backend/arguswatch/collectors/nvd_collector.py",
-        "backend/arguswatch/collectors/otx_collector.py",
-        "backend/arguswatch/collectors/shodan_collector.py",
-        "backend/arguswatch/collectors/github_collector.py",
-        "backend/arguswatch/collectors/breach_collector.py",
-        "backend/arguswatch/collectors/malwarebazaar_collector.py",
-        "backend/arguswatch/collectors/telegram_collector.py",
+        "backend/ati/collectors/cisa_kev.py",
+        "backend/ati/collectors/threatfox_collector.py",
+        "backend/ati/collectors/openphish_collector.py",
+        "backend/ati/collectors/ransomfeed_collector.py",
+        "backend/ati/collectors/nvd_collector.py",
+        "backend/ati/collectors/otx_collector.py",
+        "backend/ati/collectors/shodan_collector.py",
+        "backend/ati/collectors/github_collector.py",
+        "backend/ati/collectors/breach_collector.py",
+        "backend/ati/collectors/malwarebazaar_collector.py",
+        "backend/ati/collectors/telegram_collector.py",
     ]
 
     @pytest.mark.parametrize("path", COLLECTOR_FILES)

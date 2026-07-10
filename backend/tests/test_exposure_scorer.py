@@ -12,19 +12,19 @@ import pytest
 
 class TestModuleImports:
     def test_import_score_function(self):
-        from arguswatch.engine.exposure_scorer import score_customer_actor
+        from ati.engine.exposure_scorer import score_customer_actor
         assert callable(score_customer_actor)
 
     def test_import_recalculate(self):
-        from arguswatch.engine.exposure_scorer import recalculate_all_exposures
+        from ati.engine.exposure_scorer import recalculate_all_exposures
         assert callable(recalculate_all_exposures)
 
     def test_import_risk_summary(self):
-        from arguswatch.engine.exposure_scorer import get_customer_risk_summary
+        from ati.engine.exposure_scorer import get_customer_risk_summary
         assert callable(get_customer_risk_summary)
 
     def test_import_dimensions(self):
-        from arguswatch.engine.exposure_scorer import (
+        from ati.engine.exposure_scorer import (
             _dim1_direct_exposure, _dim2_active_exploitation,
             _dim4_attack_surface, _dim5_asset_criticality,
         )
@@ -35,33 +35,33 @@ class TestModuleImports:
         assert asyncio.iscoroutinefunction(_dim5_asset_criticality)
 
     def test_import_label(self):
-        from arguswatch.engine.exposure_scorer import _label
+        from ati.engine.exposure_scorer import _label
         assert callable(_label)
 
 
 class TestLabelFunction:
     def test_critical(self):
-        from arguswatch.engine.exposure_scorer import _label
+        from ati.engine.exposure_scorer import _label
         assert _label(85) == "CRITICAL"
 
     def test_high(self):
-        from arguswatch.engine.exposure_scorer import _label
+        from ati.engine.exposure_scorer import _label
         assert _label(65) == "HIGH"
 
     def test_medium(self):
-        from arguswatch.engine.exposure_scorer import _label
+        from ati.engine.exposure_scorer import _label
         assert _label(40) == "MEDIUM"
 
     def test_low(self):
-        from arguswatch.engine.exposure_scorer import _label
+        from ati.engine.exposure_scorer import _label
         assert _label(15) == "LOW"
 
     def test_zero(self):
-        from arguswatch.engine.exposure_scorer import _label
+        from ati.engine.exposure_scorer import _label
         assert _label(0) == "LOW"
 
     def test_max(self):
-        from arguswatch.engine.exposure_scorer import _label
+        from ati.engine.exposure_scorer import _label
         assert _label(100) == "CRITICAL"
 
 
@@ -102,9 +102,9 @@ class TestFormulaMath:
 
 class TestServiceImports:
     def test_service_imports_engine(self):
-        from arguswatch.services.exposure_scorer import calculate_all_exposures
+        from ati.services.exposure_scorer import calculate_all_exposures
         assert callable(calculate_all_exposures)
 
     def test_service_imports_customer(self):
-        from arguswatch.services.exposure_scorer import calculate_customer_exposure
+        from ati.services.exposure_scorer import calculate_customer_exposure
         assert callable(calculate_customer_exposure)

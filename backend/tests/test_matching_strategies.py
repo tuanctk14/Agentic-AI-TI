@@ -5,7 +5,7 @@ If any FALSE POSITIVE test fails, the matching engine has a bug that will
 route junk to customers.
 """
 import pytest
-from arguswatch.engine.customer_router import (
+from ati.engine.customer_router import (
     route_to_customers, CustomerAssetRecord, _simple_edit_distance
 )
 

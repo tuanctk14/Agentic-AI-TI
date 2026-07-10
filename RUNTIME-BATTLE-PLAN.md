@@ -1,4 +1,4 @@
-# ArgusWatch v16.4.7 -  Runtime Testing Battle Plan
+# ATI v16.4.7 -  Runtime Testing Battle Plan
 
 The pipeline: Collection ➜ Matching ➜ Scoring ➜ AI Triage ➜ Remediation ➜ Dashboard
 

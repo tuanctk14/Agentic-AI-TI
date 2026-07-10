@@ -1,5 +1,5 @@
 """
-ArgusWatch Integration Tests -  Real API, Real Data Flows
+ATI Integration Tests -  Real API, Real Data Flows
 
 WHAT THESE TEST:
   These are NOT unit tests with mocks. They hit the REAL FastAPI app
@@ -34,7 +34,7 @@ os.environ.setdefault("ADMIN_PASSWORD", "test-password-integration")
 os.environ.setdefault("JWT_SECRET_KEY", "test-secret-key-for-integration-tests")
 
 from fastapi.testclient import TestClient
-from arguswatch.main import app
+from ati.main import app
 
 client = TestClient(app, raise_server_exceptions=False)
 
@@ -49,13 +49,13 @@ class TestAppBoots:
     def test_app_starts(self):
         """FastAPI app initializes without import errors."""
         assert app is not None
-        assert app.title == "ArgusWatch AI-Agentic Threat Intelligence"
+        assert app.title == "ATI (Agentic Threat Intelligence)"
 
     def test_dashboard_loads(self):
         """Root URL serves the dashboard HTML."""
         r = client.get("/")
         assert r.status_code == 200
-        assert "ArgusWatch" in r.text
+        assert "ATI" in r.text
 
     def test_openapi_schema(self):
         """FastAPI auto-generates OpenAPI docs."""
@@ -358,7 +358,7 @@ class TestModelIntegrity:
 
     def test_all_models_import(self):
         """All models import without error."""
-        from arguswatch.models import (
+        from ati.models import (
             Customer, CustomerAsset, CustomerExposure, Detection,
             DarkWebMention, Enrichment, Finding, FindingSource,
             FindingRemediation, ThreatActor, Campaign, ActorIoc,
@@ -370,7 +370,7 @@ class TestModelIntegrity:
 
     def test_finding_has_required_columns(self):
         """Finding model has columns that chat_tools.py relies on."""
-        from arguswatch.models import Finding
+        from ati.models import Finding
         required = [
             "ioc_value", "ioc_type", "customer_id", "severity",
             "matched_asset", "ai_severity_decision", "actor_name",
@@ -383,7 +383,7 @@ class TestModelIntegrity:
 
     def test_darkweb_has_correct_columns(self):
         """DarkWebMention uses content_snippet, not content. discovered_at, not created_at."""
-        from arguswatch.models import DarkWebMention
+        from ati.models import DarkWebMention
         columns = [c.key for c in DarkWebMention.__table__.columns]
         assert "content_snippet" in columns, "DarkWebMention uses content_snippet, not content"
         assert "discovered_at" in columns, "DarkWebMention uses discovered_at, not created_at"
@@ -393,13 +393,13 @@ class TestModelIntegrity:
 
     def test_finding_has_no_customer_name_column(self):
         """Finding model does NOT have customer_name column -  must JOIN through Customer."""
-        from arguswatch.models import Finding
+        from ati.models import Finding
         columns = [c.key for c in Finding.__table__.columns]
         assert "customer_name" not in columns, "Finding has customer_id, not customer_name -  use JOIN"
 
     def test_user_model_exists(self):
         """User model exists for persistent auth (was in-memory dict before)."""
-        from arguswatch.models import User
+        from ati.models import User
         columns = [c.key for c in User.__table__.columns]
         assert "username" in columns
         assert "hashed_password" in columns
@@ -407,7 +407,7 @@ class TestModelIntegrity:
 
     def test_match_proof_is_json_type(self):
         """match_proof is JSON (dict), not Text -  can't slice with [:300]."""
-        from arguswatch.models import Finding
+        from ati.models import Finding
         import sqlalchemy
         col = Finding.__table__.columns["match_proof"]
         assert isinstance(col.type, sqlalchemy.types.JSON), \
@@ -419,7 +419,7 @@ class TestNoDeprecatedDatetime:
 
     def test_models_no_utcnow(self):
         import inspect
-        import arguswatch.models as models
+        import ati.models as models
         source = inspect.getsource(models)
         assert "utcnow()" not in source, "models.py still uses deprecated datetime.utcnow()"
         assert "utcnow" not in source or "onupdate" not in source.split("utcnow")[0][-50:], \
@@ -427,7 +427,7 @@ class TestNoDeprecatedDatetime:
 
     def test_auth_no_utcnow(self):
         import inspect
-        import arguswatch.auth as auth
+        import ati.auth as auth
         source = inspect.getsource(auth)
         assert "utcnow()" not in source, "auth.py still uses deprecated datetime.utcnow()"
 
@@ -437,13 +437,13 @@ class TestNoPlusOneQueries:
 
     def test_chat_tools_uses_join(self):
         import inspect
-        from arguswatch.agent import chat_tools
+        from ati.agent import chat_tools
         source = inspect.getsource(chat_tools.tool_search_findings)
         assert "outerjoin" in source, "chat_tools.tool_search_findings should use JOIN, not per-row query"
 
     def test_reliable_chat_uses_join(self):
         import inspect
-        from arguswatch.agent import chat_agent_reliable
+        from ati.agent import chat_agent_reliable
         source = inspect.getsource(chat_agent_reliable._execute_queries)
         assert "outerjoin" in source, "chat_agent_reliable should use JOIN for findings query"
 
@@ -454,14 +454,14 @@ class TestSecurityFixes:
     def test_no_jwt_in_query_params(self):
         """JWT should not be accepted in URL query parameters."""
         import inspect
-        import arguswatch.auth as auth
+        import ati.auth as auth
         source = inspect.getsource(auth.get_current_user)
         assert "query_params" not in source, "JWT in URL query params is a security risk -  removed"
 
     def test_github_collector_correct_key(self):
         """github_collector should use GITHUB_TOKEN, not VIRUSTOTAL_API_KEY."""
         import inspect
-        from arguswatch.collectors import github_collector
+        from ati.collectors import github_collector
         source = inspect.getsource(github_collector.run_collection)
         assert "GITHUB_TOKEN" in source, "github_collector still uses wrong API key"
         assert "VIRUSTOTAL_API_KEY" not in source, "github_collector checks VT key instead of GitHub"

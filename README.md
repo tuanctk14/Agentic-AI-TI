@@ -1,8 +1,8 @@
 <div align="center">
 
-<img src="backend/arguswatch/static/solvent-icon.svg" alt="Solvent CyberSecurity" width="48" height="48">
+<img src="backend/ati/static/solvent-icon.svg" alt="EVN" width="48" height="48">
 
-# ArgusWatch AI-Agentic Threat Intelligence Platform
+# ATI (Agentic Threat Intelligence) Platform
 
 ### v16.4.7 -  Multi-Tenant MSSP Platform | 47 Collectors | 111 IOC Types | 99 MITRE Mappings | 21 Admin APIs
 
@@ -24,9 +24,9 @@
 
 ---
 
-## What is ArgusWatch?
+## What is ATI?
 
-ArgusWatch is a production-grade, multi-tenant AI-Agentic threat intelligence platform for MSSPs. It collects IOCs from 47 real threat feeds, correlates them against customer assets using 8 matching strategies, and presents every finding with a provable evidence trail. AI runs locally on Qwen 3 8B via Ollama with GPU acceleration (free, private, 2-5s responses), with one-click switching to Claude, GPT, or Gemini from the dashboard header.
+ATI is a production-grade, multi-tenant AI-Agentic threat intelligence platform for MSSPs. It collects IOCs from 47 real threat feeds, correlates them against customer assets using 8 matching strategies, and presents every finding with a provable evidence trail. AI runs locally on Qwen 3 8B via Ollama with GPU acceleration (free, private, 2-5s responses), with one-click switching to Claude, GPT, or Gemini from the dashboard header.
 
 
 <img width="1343" height="964" alt="1" src="https://github.com/user-attachments/assets/9ae21a8b-fd4f-4d86-ba90-95450ad28b2a" />
@@ -40,7 +40,7 @@ ArgusWatch is a production-grade, multi-tenant AI-Agentic threat intelligence pl
 
 ### Why "AI-Agentic"?
 
-The core of ArgusWatch is an **autonomous AI orchestrator** that investigates threats the way a human SOC analyst would -  but faster:
+The core of ATI is an **autonomous AI orchestrator** that investigates threats the way a human SOC analyst would -  but faster:
 
 ```
 Detection arrives: "CVE-2026-3404 found in Uber's tech stack"
@@ -337,7 +337,7 @@ arguswatch-v16.4.7/
 ├── 🔧 START.bat / FRESH-START.bat             # Windows scripts
 │
 ├── backend/                                   # ═══ FASTAPI BACKEND ═══
-│   ├── arguswatch/
+│   ├── ati/
 │   │   ├── main.py                            # App init, auth, health, onboard (~2,283 lines -  was 5,258)
 │   │   ├── api/
 │   │   │   ├── ai_routes.py                   # AI endpoints: triage, chat, investigate (896 lines)
@@ -389,8 +389,8 @@ arguswatch-v16.4.7/
 │   │   │   │                                  #   Dark web clickable cards
 │   │   │   │                                  #   AI chat with countdown timer
 │   │   │   │                                  #   Onboard with validation
-│   │   │   ├── solvent-icon.svg               # Solvent CyberSecurity icon
-│   │   │   └── solvent-logo.svg               # Solvent CyberSecurity logo
+│   │   │   ├── solvent-icon.svg               # EVN icon
+│   │   │   └── solvent-logo.svg               # EVN logo
 │   │   │
 │   │   └── api/                               # ═══ SUB-ROUTERS ═══
 │   │       ├── customers.py                   # Customer CRUD + onboard
@@ -847,16 +847,16 @@ Weekly pulls from MITRE STIX GitHub. Flags deprecated techniques in registry. Su
 
 ## License
 
-Proprietary - Solvent CyberSecurity LLC. All rights reserved.
+Proprietary - EVN LLC. All rights reserved.
 
 ---
 
 
 <div align="center">
 
-<img src="backend/arguswatch/static/solvent-icon.svg" alt="Solvent" width="24" height="24">
+<img src="backend/ati/static/solvent-icon.svg" alt="EVN" width="24" height="24">
 
- *ArgusWatch: See Everything. Miss Nothing.*
+ *ATI: See Everything. Miss Nothing.*
  
  <br>
 
@@ -864,7 +864,7 @@ Proprietary - Solvent CyberSecurity LLC. All rights reserved.
 
 Built by [**3sk1nt4n**](https://www.credly.com/users/eskintan/badges)
 
-[Solvent CyberSecurity LLC](https://solventcyber.com) - *Defending what matters. One command at a time.*
+[EVN LLC](https://solventcyber.com) - *Defending what matters. One command at a time.*
 
 <br>
 

@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -e
 echo "═══════════════════════════════════════════════════"
-echo "  ArgusWatch AI-Agentic Threat Intelligence v16.4.7"
-echo "  Solvent CyberSecurity LLC"
+echo "  ATI (Agentic Threat Intelligence) v16.4.7"
+echo "  EVN LLC"
 echo "═══════════════════════════════════════════════════"
 if ! docker info > /dev/null 2>&1; then
     echo "❌ Docker is not running. Start Docker Desktop first."

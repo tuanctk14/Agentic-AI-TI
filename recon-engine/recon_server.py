@@ -1,5 +1,5 @@
 """
-ArgusWatch Recon Engine
+ATI Recon Engine
 ========================
 Separate microservice with FULL internet + recon tools.
 Runs REAL reconnaissance against customer domains:
@@ -457,7 +457,7 @@ async def lifespan(app: FastAPI):
             await asyncio.sleep(3)
     yield
 
-app = FastAPI(title="ArgusWatch Recon Engine", lifespan=lifespan)
+app = FastAPI(title="ATI Recon Engine", lifespan=lifespan)
 
 @app.get("/health")
 async def health():

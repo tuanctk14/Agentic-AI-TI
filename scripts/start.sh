@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 echo "═══════════════════════════════════════"
-echo "  ArgusWatch AI - Starting"
+echo "  ATI AI - Starting"
 echo "═══════════════════════════════════════"
 # Support both docker compose v2 and docker-compose v1
 if command -v docker compose &>/dev/null; then

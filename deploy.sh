@@ -1,12 +1,12 @@
 #!/bin/bash
 # ═══════════════════════════════════════════════════════════
-# ArgusWatch V13 - Clean Deploy Script
+# ATI V13 - Clean Deploy Script
 # Wipes old database, rebuilds, and seeds fresh data
 # ═══════════════════════════════════════════════════════════
 set -e
 
 echo "═══════════════════════════════════════════════════════"
-echo "  ArgusWatch V13 - CLEAN DEPLOY"
+echo "  ATI V13 - CLEAN DEPLOY"
 echo "═══════════════════════════════════════════════════════"
 
 echo ""
@@ -25,7 +25,7 @@ sleep 30
 
 echo ""
 echo "═══════════════════════════════════════════════════════"
-echo "  ✅ ArgusWatch V13 READY"
+echo "  ✅ ATI V13 READY"
 echo "  Dashboard: http://localhost:7777"
 echo "  API Docs:  http://localhost:7777/docs"
 echo ""

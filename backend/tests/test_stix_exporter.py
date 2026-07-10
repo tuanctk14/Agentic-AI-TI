@@ -1,7 +1,7 @@
 """Tests for stix_exporter.py - STIX 2.1 bundle generation."""
 import pytest
 import json
-from arguswatch.engine.stix_exporter import (
+from ati.engine.stix_exporter import (
     _stix_pattern, _indicator_type, export_detection_to_stix, bundle_to_json,
 )
 

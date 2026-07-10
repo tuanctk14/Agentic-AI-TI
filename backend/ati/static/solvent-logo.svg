@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 40" width="180" height="40">
+  <defs><linearGradient id="atilg" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0%" stop-color="#22d3ee"/><stop offset="100%" stop-color="#a78bfa"/>
+  </linearGradient></defs>
+  <g transform="translate(4,4)">
+    <path d="M16 0 L28 4 V14 C28 22 22 28 16 32 C10 28 4 22 4 14 V4 Z"
+          fill="none" stroke="url(#atilg)" stroke-width="1.8" stroke-linejoin="round"/>
+    <circle cx="16" cy="14" r="2.4" fill="url(#atilg)"/>
+    <path d="M16 14 L16 8 M16 14 L10 17 M16 14 L22 17 M16 14 L16 22"
+          stroke="url(#atilg)" stroke-width="1.4" stroke-linecap="round" fill="none"/>
+  </g>
+  <text x="44" y="26" font-family="'Segoe UI',Roboto,system-ui,sans-serif"
+        font-size="20" font-weight="700" letter-spacing="2" fill="url(#atilg)">ATI</text>
+  <text x="82" y="26" font-family="'Segoe UI',Roboto,system-ui,sans-serif"
+        font-size="11" font-weight="500" letter-spacing="1" fill="#a8b3cf">Agentic TI</text>
+</svg>

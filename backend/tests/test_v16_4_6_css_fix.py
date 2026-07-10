@@ -1,7 +1,7 @@
 """v16.4.7 regression tests: CSS false-positive fix + action_generator sanitizer."""
 import re
 import pytest
-from arguswatch.engine.pattern_matcher import scan_text
+from ati.engine.pattern_matcher import scan_text
 
 
 # ── Fix 1: CSS must NOT match as username_password_combo ──
@@ -40,7 +40,7 @@ class TestCSSFalsePositive:
 
 # ── Fix 2: action_generator sanitizer ──
 
-from arguswatch.engine.action_generator import _strip_html, _safe_val, _title
+from ati.engine.action_generator import _strip_html, _safe_val, _title
 
 
 class TestSanitizer:

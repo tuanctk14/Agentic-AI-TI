@@ -1,6 +1,6 @@
 """Tests for customer_intel_matcher.py - helper functions for S1-S8 strategies."""
 import pytest
-from arguswatch.engine.customer_intel_matcher import (
+from ati.engine.customer_intel_matcher import (
     _normalize_product, _extract_version, _products_match,
     _version_in_range, _ip_in_any_cidr, _domain_matches_ioc, _domain_in_text,
 )

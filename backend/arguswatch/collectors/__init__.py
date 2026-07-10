@@ -1,1 +1,0 @@
-"""ArgusWatch collectors package."""

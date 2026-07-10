@@ -5,7 +5,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 os.environ["AUTH_DISABLED"] = "true"
 
-from arguswatch.main import app
+from ati.main import app
 from fastapi.testclient import TestClient
 
 client = TestClient(app)

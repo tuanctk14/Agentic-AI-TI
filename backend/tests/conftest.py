@@ -1,5 +1,5 @@
 """
-ArgusWatch Test Suite - Shared Fixtures
+ATI Test Suite - Shared Fixtures
 Run: cd backend && pytest tests/ -v
 """
 import os

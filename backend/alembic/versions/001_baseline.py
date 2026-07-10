@@ -38,7 +38,7 @@ def upgrade() -> None:
             IF NOT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'detections') THEN
                 RAISE EXCEPTION 'Table detections not found - run initdb/01_schema.sql first';
             END IF;
-            RAISE NOTICE 'ArgusWatch v16.4.1 baseline verified - 25 tables present';
+            RAISE NOTICE 'ATI v16.4.1 baseline verified - 25 tables present';
         END $$;
     """)
 

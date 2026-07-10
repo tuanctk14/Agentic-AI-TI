@@ -2,8 +2,8 @@
 set -euo pipefail
 
 # ═══════════════════════════════════════════════════════════
-#  ArgusWatch AI v16.4.7 -  One Command Launch
-#  Solvent CyberSecurity LLC
+#  ATI AI v16.4.7 -  One Command Launch
+#  EVN LLC
 #
 #  What happens automatically:
 #   1. Nukes all existing containers + volumes (clean slate)
@@ -35,7 +35,7 @@ YELLOW='\033[1;33m'; BOLD='\033[1m'; NC='\033[0m'
 
 echo ""
 echo -e "${CYAN}═══════════════════════════════════════════════════════════${NC}"
-echo -e "${BOLD}  ⚡ ArgusWatch AI v16.4.7 -  Fresh Start${NC}"
+echo -e "${BOLD}  ⚡ ATI AI v16.4.7 -  Fresh Start${NC}"
 echo -e "${BOLD}  🛡️  AI-Agentic Multi-Tenant Threat Intelligence${NC}"
 echo -e "${BOLD}  ⚠️  This destroys ALL data and rebuilds from scratch${NC}"
 echo -e "${CYAN}═══════════════════════════════════════════════════════════${NC}"
@@ -129,7 +129,7 @@ echo "    Stop:           ./stop.sh"
 echo "    Restart fresh:  ./fresh-start.sh"
 echo ""
 echo -e "${CYAN}═══════════════════════════════════════════════════════════${NC}"
-echo -e "  ${BOLD}Solvent CyberSecurity LLC${NC}"
+echo -e "  ${BOLD}EVN LLC${NC}"
 echo -e "  Defending what matters. One command at a time."
 echo -e "${CYAN}═══════════════════════════════════════════════════════════${NC}"
 echo ""

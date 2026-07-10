@@ -1,10 +1,10 @@
 #!/bin/bash
-# ArgusWatch AI-Agentic Threat Intelligence v16.4.7 - Backend Entrypoint
+# ATI (Agentic Threat Intelligence) v16.4.7 - Backend Entrypoint
 set -e
 
 echo "======================================================="
-echo "  ArgusWatch AI-Agentic Threat Intelligence v16.4.7"
-echo "  Solvent CyberSecurity LLC"
+echo "  ATI (Agentic Threat Intelligence) v16.4.7"
+echo "  EVN LLC"
 echo "======================================================="
 
 # 1. Wait for PostgreSQL (errors visible, not suppressed)
@@ -43,13 +43,13 @@ done
 
 # 2. Run migrations
 echo "[2/5] Running migrations..."
-python -m arguswatch.scripts.migrate_v10     2>&1 | tail -1 || echo "  migrate_v10 skipped"
-python -m arguswatch.scripts.migrate_v13_ai  2>&1 | tail -1 || echo "  migrate_v13_ai skipped"
-python -m arguswatch.scripts.migrate_v13b    2>&1 | tail -1 || echo "  migrate_v13b skipped"
-python -m arguswatch.scripts.migrate_v14     2>&1 | tail -1 || echo "  migrate_v14 skipped"
-python -m arguswatch.scripts.migrate_v15     2>&1 | tail -1 || echo "  migrate_v15 skipped"
-python -m arguswatch.scripts.migrate_v16_fix 2>&1 | tail -1 || echo "  migrate_v16_fix skipped"
-python -m arguswatch.scripts.migrate_v16_4   2>&1 | tail -1 || echo "  migrate_v16_4 skipped"
+python -m ati.scripts.migrate_v10     2>&1 | tail -1 || echo "  migrate_v10 skipped"
+python -m ati.scripts.migrate_v13_ai  2>&1 | tail -1 || echo "  migrate_v13_ai skipped"
+python -m ati.scripts.migrate_v13b    2>&1 | tail -1 || echo "  migrate_v13b skipped"
+python -m ati.scripts.migrate_v14     2>&1 | tail -1 || echo "  migrate_v14 skipped"
+python -m ati.scripts.migrate_v15     2>&1 | tail -1 || echo "  migrate_v15 skipped"
+python -m ati.scripts.migrate_v16_fix 2>&1 | tail -1 || echo "  migrate_v16_fix skipped"
+python -m ati.scripts.migrate_v16_4   2>&1 | tail -1 || echo "  migrate_v16_4 skipped"
 echo "  Migrations complete"
 
 # 3. Alembic baseline
@@ -82,7 +82,7 @@ if [ "$CUSTOMER_COUNT" -lt "1" ]; then
     echo "  Empty DB - seeding customers from CSV FIRST..."
     python -c "
 import asyncio
-from arguswatch.services.seed import seed_from_csv
+from ati.services.seed import seed_from_csv
 result = asyncio.run(seed_from_csv())
 print(f'  CSV Seed: {result}')
 " 2>&1 || echo "  CSV seed skipped"
@@ -90,7 +90,7 @@ print(f'  CSV Seed: {result}')
     echo "  Seeding demo threat data..."
     python -c "
 import asyncio
-from arguswatch.services.seed_demo import seed_demo_data
+from ati.services.seed_demo import seed_demo_data
 result = asyncio.run(seed_demo_data())
 print(f'  Demo Seed: {result}')
 " 2>&1 || echo "  Demo seed skipped (non-critical)"
@@ -105,38 +105,43 @@ echo "  Running SQL safety net..."
 PGCMD="psql -h ${POSTGRES_HOST:-postgres} -U ${POSTGRES_USER:-arguswatch} -d ${POSTGRES_DB:-arguswatch}"
 export PGPASSWORD="${POSTGRES_PASSWORD:-arguswatch_dev_2026}"
 
-# Customers
+# Customers – EVN group
 $PGCMD -c "INSERT INTO customers (name, industry, tier, email, onboarding_state, active) VALUES
-  ('Yahoo','technology','enterprise','security@yahoo.com','monitoring',true),
-  ('Shopify','technology','premium','security@shopify.com','monitoring',true),
-  ('Uber','transportation','enterprise','security@uber.com','monitoring',true),
-  ('GitHub','technology','enterprise','security@github.com','monitoring',true),
-  ('Starbucks','retail','premium','security@starbucks.com','monitoring',true),
-  ('VulnWeb Demo','technology','standard','admin@vulnweb.com','monitoring',true)
+  ('EVN','energy','enterprise','security@evn.com.vn','monitoring',true),
+  ('EVN NPC','energy','enterprise','security@npc.com.vn','monitoring',true),
+  ('EVN CPC','energy','premium','security@cpc.vn','monitoring',true),
+  ('EVN SPC','energy','enterprise','security@evnspc.vn','monitoring',true),
+  ('EVN HANOI','energy','premium','security@evnhanoi.com.vn','monitoring',true),
+  ('EVN HCMC','energy','premium','security@evnhcmc.vn','monitoring',true),
+  ('EVNICT','energy','standard','security@evnict.vn','monitoring',true)
   ON CONFLICT (name) DO NOTHING;" 2>/dev/null || true
 
-# Customer assets
+# Customer assets – brand + domain + keyword for each EVN unit
 $PGCMD -c "INSERT INTO customer_assets (customer_id, asset_type, asset_value, criticality)
   SELECT c.id, a.t::assettype, a.v, a.cr FROM customers c
   CROSS JOIN (VALUES
-    ('domain','yahoo.com','critical'),('keyword','yahoo','critical'),('brand_name','Yahoo','critical'),
-    ('subdomain','mail.yahoo.com','critical'),('subdomain','login.yahoo.com','high'),
-    ('domain','shopify.com','critical'),('keyword','shopify','critical'),('brand_name','Shopify','critical'),
-    ('subdomain','accounts.shopify.com','critical'),
-    ('domain','uber.com','critical'),('keyword','uber','critical'),('brand_name','Uber','critical'),
-    ('subdomain','auth.uber.com','critical'),
-    ('domain','github.com','critical'),('keyword','github','critical'),('brand_name','GitHub','critical'),
-    ('subdomain','api.github.com','critical'),
-    ('domain','starbucks.com','critical'),('keyword','starbucks','critical'),('brand_name','Starbucks','critical'),
-    ('domain','vulnweb.com','critical'),('keyword','vulnweb','critical'),('keyword','acunetix','high'),
-    ('brand_name','VulnWeb','critical')
+    ('domain','evn.com.vn','critical'),('keyword','evn','critical'),('brand_name','EVN','critical'),
+    ('subdomain','portal.evn.com.vn','high'),('subdomain','mail.evn.com.vn','high'),
+    ('domain','npc.com.vn','critical'),('keyword','npc','high'),('brand_name','EVN NPC','critical'),
+    ('subdomain','cskh.npc.com.vn','high'),
+    ('domain','cpc.vn','critical'),('keyword','cpc','high'),('brand_name','EVN CPC','critical'),
+    ('subdomain','cskh.cpc.vn','high'),
+    ('domain','evnspc.vn','critical'),('keyword','evnspc','high'),('brand_name','EVN SPC','critical'),
+    ('subdomain','cskh.evnspc.vn','high'),
+    ('domain','evnhanoi.com.vn','critical'),('keyword','evnhanoi','high'),('brand_name','EVN HANOI','critical'),
+    ('subdomain','cskh.evnhanoi.com.vn','high'),
+    ('domain','evnhcmc.vn','critical'),('keyword','evnhcmc','high'),('brand_name','EVN HCMC','critical'),
+    ('subdomain','cskh.evnhcmc.vn','high'),
+    ('domain','evnict.vn','critical'),('keyword','evnict','critical'),('brand_name','EVNICT','critical'),
+    ('subdomain','portal.evnict.vn','high')
   ) AS a(t, v, cr)
-  WHERE (c.name='Yahoo' AND a.v IN ('yahoo.com','yahoo','Yahoo','mail.yahoo.com','login.yahoo.com'))
-     OR (c.name='Shopify' AND a.v IN ('shopify.com','shopify','Shopify','accounts.shopify.com'))
-     OR (c.name='Uber' AND a.v IN ('uber.com','uber','Uber','auth.uber.com'))
-     OR (c.name='GitHub' AND a.v IN ('github.com','github','GitHub','api.github.com'))
-     OR (c.name='Starbucks' AND a.v IN ('starbucks.com','starbucks','Starbucks'))
-     OR (c.name='VulnWeb Demo' AND a.v IN ('vulnweb.com','vulnweb','acunetix','VulnWeb'))
+  WHERE (c.name='EVN'       AND a.v IN ('evn.com.vn','evn','EVN','portal.evn.com.vn','mail.evn.com.vn'))
+     OR (c.name='EVN NPC'   AND a.v IN ('npc.com.vn','npc','EVN NPC','cskh.npc.com.vn'))
+     OR (c.name='EVN CPC'   AND a.v IN ('cpc.vn','cpc','EVN CPC','cskh.cpc.vn'))
+     OR (c.name='EVN SPC'   AND a.v IN ('evnspc.vn','evnspc','EVN SPC','cskh.evnspc.vn'))
+     OR (c.name='EVN HANOI' AND a.v IN ('evnhanoi.com.vn','evnhanoi','EVN HANOI','cskh.evnhanoi.com.vn'))
+     OR (c.name='EVN HCMC'  AND a.v IN ('evnhcmc.vn','evnhcmc','EVN HCMC','cskh.evnhcmc.vn'))
+     OR (c.name='EVNICT'    AND a.v IN ('evnict.vn','evnict','EVNICT','portal.evnict.vn'))
   ON CONFLICT DO NOTHING;" 2>/dev/null || true
 
 # NOTE: No fake findings seeded. Findings are created ONLY by real correlation:
@@ -229,11 +234,11 @@ echo "  $FINAL_COUNTS"
 echo "  SQL safety net complete"
 
 # 5. Start uvicorn
-echo "[5/5] Starting ArgusWatch backend..."
+echo "[5/5] Starting ATI backend..."
 echo "======================================================="
 echo "  Dashboard:  http://localhost:7777"
 echo "  API Docs:   http://localhost:7777/docs"
 echo "  Prometheus: http://localhost:9091"
 echo "======================================================="
 
-exec uvicorn arguswatch.main:app --host 0.0.0.0 --port 8000
+exec uvicorn ati.main:app --host 0.0.0.0 --port 8000

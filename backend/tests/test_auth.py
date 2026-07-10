@@ -6,7 +6,7 @@ os.environ["AUTH_DISABLED"] = "false"
 os.environ["ADMIN_USER"] = "testadmin"
 os.environ["ADMIN_PASSWORD"] = "testpass123"
 
-from arguswatch.auth import (
+from ati.auth import (
     authenticate_user, create_user, delete_user, list_users,
     create_access_token, verify_token, pwd_context,
 )

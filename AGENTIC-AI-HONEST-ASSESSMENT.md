@@ -1,4 +1,4 @@
-# ArgusWatch AI -  Honest Assessment (v16.4.7 Session B)
+# ATI AI -  Honest Assessment (v16.4.7 Session B)
 
 **Date:** March 9, 2026  
 **Author:** Honest code review, not marketing  
@@ -78,7 +78,7 @@ The response card shows 🤖 for LLM steps and ⚡ for instant steps. No hiding 
 | 9 | Qwen3-Coder-Next 80B-A3B | 🟢 LOCAL | ~14 GB | 25-40 t/s | ~75 | 70.6% | 256K | ✅ Strong | **FREE** |
 | 10 | Gemma 3 12B | 🟢 LOCAL | ~8 GB | 35-50 t/s | ~60 | -  | 128K | ⚠️ Limited | **FREE** |
 
-**Strategy:** Default to Qwen 3.5 9B locally (free, private). One-click to Gemini 3.1 Pro for best-value cloud. One-click to Claude Opus 4.6 for deepest reasoning. One-click to GPT-5.3 Codex for coding/terminal. All four already wired in ArgusWatch.
+**Strategy:** Default to Qwen 3.5 9B locally (free, private). One-click to Gemini 3.1 Pro for best-value cloud. One-click to Claude Opus 4.6 for deepest reasoning. One-click to GPT-5.3 Codex for coding/terminal. All four already wired in ATI.
 
 > **⚠️ Benchmark verification:** Scores sourced from Artificial Analysis, Google DeepMind model cards, Anthropic release posts, OpenAI announcements, and VentureBeat (Feb-Mar 2026). Verify current numbers at [artificialanalysis.ai](https://artificialanalysis.ai) before using in customer-facing materials. Model availability and pricing change frequently.
 

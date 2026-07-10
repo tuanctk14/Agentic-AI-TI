@@ -1,5 +1,5 @@
 """
-ArgusWatch v15 Test Suite
+ATI v15 Test Suite
 ==========================
 Run: python -m pytest tests/test_pipeline.py -v
 Or:  python tests/test_pipeline.py (standalone)
@@ -22,7 +22,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 # ═══════════════════════════════════════════════════════════════════
 
 def test_collector_schema_valid():
-    from arguswatch.utils import validate_collector_output
+    from ati.utils import validate_collector_output
     
     # Valid output
     result = validate_collector_output({"new": 5, "skipped": 0, "total": 10}, "test")
@@ -51,7 +51,7 @@ def test_collector_schema_valid():
 # ═══════════════════════════════════════════════════════════════════
 
 def test_domain_etld1_normalization():
-    from arguswatch.utils import normalize_domain_etld1
+    from ati.utils import normalize_domain_etld1
     
     # Standard domains
     assert normalize_domain_etld1("hackthebox.com") == "hackthebox.com"
@@ -76,7 +76,7 @@ def test_domain_etld1_normalization():
 
 
 def test_domain_boundary_matching():
-    from arguswatch.engine.customer_intel_matcher import _domain_matches_ioc
+    from ati.engine.customer_intel_matcher import _domain_matches_ioc
     
     # MUST match
     assert _domain_matches_ioc("hackthebox.com", "hackthebox.com") == "exact_domain"
@@ -100,7 +100,7 @@ def test_domain_boundary_matching():
 # ═══════════════════════════════════════════════════════════════════
 
 def test_version_in_range():
-    from arguswatch.engine.customer_intel_matcher import _version_in_range
+    from ati.engine.customer_intel_matcher import _version_in_range
     
     # Customer has nginx 1.18.0, CVE affects < 1.15 -> PATCHED (False = not vulnerable)
     assert _version_in_range("1.18.0", "< 1.15") == False
@@ -136,7 +136,7 @@ def test_version_in_range():
 # ═══════════════════════════════════════════════════════════════════
 
 def test_product_alias():
-    from arguswatch.utils import resolve_product_canonical, products_match_canonical
+    from ati.utils import resolve_product_canonical, products_match_canonical
     
     # Alias resolution
     assert resolve_product_canonical("FortiOS 7.2") == "fortios"
@@ -164,7 +164,7 @@ def test_product_alias():
 # ═══════════════════════════════════════════════════════════════════
 
 def test_feed_confidence():
-    from arguswatch.utils import get_feed_confidence, time_decay, calculate_decayed_score
+    from ati.utils import get_feed_confidence, time_decay, calculate_decayed_score
     from datetime import datetime, timezone, timedelta
     
     # Known feeds
@@ -204,7 +204,7 @@ def test_hash_no_customer_match():
     
     # Verify hash types aren't in any matching strategy's query
     import ast, inspect
-    from arguswatch.engine import customer_intel_matcher as m
+    from ati.engine import customer_intel_matcher as m
     source = inspect.getsource(m.match_customer_intel)
     
     # The matcher should never query for hash_sha256 or hash_md5 ioc_type
@@ -220,7 +220,7 @@ def test_hash_no_customer_match():
 
 def test_scoring_dimensions():
     """Verify 5 dimensions exist and weights sum correctly."""
-    from arguswatch.engine.exposure_scorer import DIMENSION_WEIGHTS
+    from ati.engine.exposure_scorer import DIMENSION_WEIGHTS
     
     expected = {"direct_exposure", "active_exploitation", "actor_intent",
                 "attack_surface", "asset_criticality"}
@@ -241,7 +241,7 @@ def test_scoring_dimensions():
 # ═══════════════════════════════════════════════════════════════════
 
 if __name__ == "__main__":
-    print("ArgusWatch v15 Test Suite")
+    print("ATI v15 Test Suite")
     print("=" * 50)
     
     tests = [

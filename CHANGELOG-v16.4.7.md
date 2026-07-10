@@ -1,4 +1,4 @@
-# CHANGELOG -  ArgusWatch v16.4.7
+# CHANGELOG -  ATI v16.4.7
 
 **Release Date:** March 7, 2026  
 **Session:** Full pipeline audit + 20 bug fixes + 110 test cases

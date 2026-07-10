@@ -1,6 +1,6 @@
 #!/bin/bash
 # ══════════════════════════════════════════════════════════════
-# ArgusWatch Ollama Entrypoint - Full Auto Model Pull
+# ATI Ollama Entrypoint - Full Auto Model Pull
 # ══════════════════════════════════════════════════════════════
 # 1. Starts ollama serve in background
 # 2. Waits for server ready
@@ -14,7 +14,7 @@ set -e
 MODEL="${OLLAMA_MODEL:-qwen3:8b}"
 
 echo "═══════════════════════════════════════════════════════"
-echo "  ArgusWatch AI Engine - Ollama"
+echo "  ATI AI Engine - Ollama"
 echo "  Model: $MODEL"
 echo "═══════════════════════════════════════════════════════"
 

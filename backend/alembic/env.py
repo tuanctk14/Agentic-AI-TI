@@ -1,5 +1,5 @@
 """Alembic environment configuration.
-Reads DATABASE_URL from the same env vars as the ArgusWatch backend.
+Reads DATABASE_URL from the same env vars as the ATI backend.
 """
 import os
 from logging.config import fileConfig
@@ -8,7 +8,7 @@ from sqlalchemy import engine_from_config, pool
 from alembic import context
 
 # Import all models so Alembic can see them for autogenerate
-from arguswatch.models import Base
+from ati.models import Base
 
 config = context.config
 
